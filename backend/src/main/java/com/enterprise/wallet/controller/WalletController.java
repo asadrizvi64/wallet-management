@@ -2,6 +2,7 @@ package com.enterprise.wallet.controller;
 
 import com.enterprise.wallet.dto.ApiResponse;
 import com.enterprise.wallet.dto.TransactionDTOs.*;
+import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +22,7 @@ public class WalletController {
 
     private final WalletService walletService;
     private final com.enterprise.wallet.service.TransactionService transactionService;
+    private final com.enterprise.wallet.service.TransactionLimitService transactionLimitService;
     
     // API 1: Create Wallet
     @PostMapping("/create")
@@ -128,5 +130,17 @@ public class WalletController {
         TransactionResponse transaction = transactionService.withdrawMoney(withdrawRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Money withdrawn successfully", transaction));
+    }
+
+    // API 8: Get Transaction Limits
+    @GetMapping("/{walletNumber}/limits")
+    @Operation(summary = "Get transaction limits", description = "Retrieves transaction limits for a wallet including daily/monthly limits and spending")
+    public ResponseEntity<ApiResponse<TransactionLimitResponse>> getTransactionLimits(
+            @PathVariable String walletNumber) {
+
+        // Get wallet by wallet number
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        TransactionLimitResponse limits = transactionLimitService.getTransactionLimits(wallet.getId());
+        return ResponseEntity.ok(ApiResponse.success("Transaction limits retrieved", limits));
     }
 }
