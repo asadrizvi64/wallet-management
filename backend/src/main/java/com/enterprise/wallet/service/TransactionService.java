@@ -237,7 +237,13 @@ public class TransactionService {
         
         return new TransactionHistoryResponse(response, (long) transactions.size(), totalCredits, totalDebits);
     }
-    
+
+    // Function 10b: Get Transaction History by Wallet Number
+    public TransactionHistoryResponse getTransactionHistoryByWalletNumber(String walletNumber) {
+        Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        return getTransactionHistory(wallet.getId());
+    }
+
     // Function 11: Cancel Transaction
     public TransactionResponse cancelTransaction(String transactionRef) {
         Transaction transaction = transactionRepository.findByTransactionRef(transactionRef)
