@@ -346,34 +346,45 @@ public class TransactionService {
     
     private void checkTransactionLimit(Wallet wallet, BigDecimal amount) {
         TransactionLimit limit = limitRepository.findByWalletId(wallet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Transaction limits not configured"));
-        
+                .orElseGet(() -> {
+                    // Create default limits if they don't exist
+                    log.warn("Transaction limits not found for wallet ID: {}, creating defaults", wallet.getId());
+                    TransactionLimit defaultLimit = new TransactionLimit();
+                    defaultLimit.setWallet(wallet);
+                    defaultLimit.setDailyLimit(new BigDecimal("50000"));
+                    defaultLimit.setMonthlyLimit(new BigDecimal("500000"));
+                    defaultLimit.setPerTransactionLimit(new BigDecimal("25000"));
+                    defaultLimit.setDailySpent(BigDecimal.ZERO);
+                    defaultLimit.setMonthlySpent(BigDecimal.ZERO);
+                    defaultLimit.setLastResetDate(java.time.LocalDate.now());
+                    return limitRepository.save(defaultLimit);
+                });
+
         // Reset if needed
         if (!limit.getLastResetDate().equals(java.time.LocalDate.now())) {
             limit.setDailySpent(BigDecimal.ZERO);
             limit.setLastResetDate(java.time.LocalDate.now());
         }
-        
+
         if (amount.compareTo(limit.getPerTransactionLimit()) > 0) {
             throw new TransactionException("Amount exceeds per transaction limit");
         }
-        
+
         if (limit.getDailySpent().add(amount).compareTo(limit.getDailyLimit()) > 0) {
             throw new TransactionException("Daily limit exceeded");
         }
-        
+
         if (limit.getMonthlySpent().add(amount).compareTo(limit.getMonthlyLimit()) > 0) {
             throw new TransactionException("Monthly limit exceeded");
         }
     }
     
     private void updateSpendingLimits(Wallet wallet, BigDecimal amount) {
-        TransactionLimit limit = limitRepository.findByWalletId(wallet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Transaction limits not configured"));
-        
-        limit.setDailySpent(limit.getDailySpent().add(amount));
-        limit.setMonthlySpent(limit.getMonthlySpent().add(amount));
-        limitRepository.save(limit);
+        limitRepository.findByWalletId(wallet.getId()).ifPresent(limit -> {
+            limit.setDailySpent(limit.getDailySpent().add(amount));
+            limit.setMonthlySpent(limit.getMonthlySpent().add(amount));
+            limitRepository.save(limit);
+        });
     }
     
     private void createNotification(Wallet wallet, String title, String message) {
