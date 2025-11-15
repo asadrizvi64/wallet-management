@@ -1,6 +1,6 @@
 package com.enterprise.wallet.dto;
 
-import com.enterprise.wallet.model.User;
+import com.enterprise.wallet.entity.User;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.enterprise.wallet.dto;
 
-import com.enterprise.wallet.model.PaymentLink;
-import com.enterprise.wallet.model.WalletNotification;
+import com.enterprise.wallet.entity.PaymentLink;
+import com.enterprise.wallet.entity.WalletNotification;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -18,22 +18,24 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     
-    Optional<Transaction> findByTransactionReference(String transactionReference);
-    
-    List<Transaction> findBySenderWalletOrReceiverWalletOrderByCreatedAtDesc(
-        Wallet senderWallet, Wallet receiverWallet
+    Optional<Transaction> findByTransactionRef(String transactionRef);
+
+    List<Transaction> findByWalletIdOrderByCreatedAtDesc(Long walletId);
+
+    List<Transaction> findByWalletOrRecipientWalletOrderByCreatedAtDesc(
+        Wallet wallet, Wallet recipientWallet
     );
-    
-    Page<Transaction> findBySenderWalletOrReceiverWallet(
-        Wallet senderWallet, Wallet receiverWallet, Pageable pageable
+
+    Page<Transaction> findByWalletOrRecipientWallet(
+        Wallet wallet, Wallet recipientWallet, Pageable pageable
     );
-    
-    List<Transaction> findBySenderWalletAndCreatedAtBetween(
+
+    List<Transaction> findByWalletAndCreatedAtBetween(
         Wallet wallet, LocalDateTime start, LocalDateTime end
     );
-    
+
     @Query("SELECT t FROM Transaction t WHERE " +
-           "(t.senderWallet = :wallet OR t.receiverWallet = :wallet) " +
+           "(t.wallet = :wallet OR t.recipientWallet = :wallet) " +
            "AND t.createdAt BETWEEN :start AND :end " +
            "ORDER BY t.createdAt DESC")
     List<Transaction> findWalletTransactionsBetween(

@@ -1,4 +1,4 @@
-package com.enterprise.wallet.model;
+package com.enterprise.wallet.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
