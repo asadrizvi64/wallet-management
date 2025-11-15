@@ -16,6 +16,9 @@ where docker >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Docker is not installed
     echo Please install Docker from https://docs.docker.com/get-docker/
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 )
 
@@ -34,6 +37,9 @@ if %errorlevel% equ 0 (
 
 echo [ERROR] Docker Compose is not installed
 echo Please install Docker Compose from https://docs.docker.com/compose/install/
+echo.
+echo Press any key to exit...
+pause >nul
 exit /b 1
 
 :compose_found
@@ -76,6 +82,9 @@ if %errorlevel% equ 0 (
 ) else (
     echo [ERROR] Failed to start services
     echo Please check the error messages above
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 )
 

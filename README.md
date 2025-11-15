@@ -90,6 +90,8 @@ wallet-management/
 - Maven 3.6+
 - Postman (for API testing)
 
+**📌 Windows Users**: See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for detailed Windows-specific setup and direct CLI commands.
+
 ### Step 1: Database Setup
 
 ```bash
@@ -417,18 +419,26 @@ Email: ali@example.com
 
 ### Common Issues
 
-**1. Database Connection Error**
+**1. Batch Files Close Immediately**
+```
+Solution: The batch files now show error messages before closing.
+If they still close, see WINDOWS_SETUP.md for direct CLI commands.
+```
+
+**2. Database Connection Error**
 ```
 Solution: Check MySQL is running and credentials in application.properties
 ```
 
-**2. Port Already in Use**
+**3. Port Already in Use**
 ```
 Backend (8080): Change server.port in application.properties
 Frontend (3000): Use PORT=3001 npm start
+
+Windows: See WINDOWS_SETUP.md for commands to find and kill processes
 ```
 
-**3. CORS Error**
+**4. CORS Error**
 ```
 Solution: Verify CORS configuration in SecurityConfig.java
 ```

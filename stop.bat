@@ -28,6 +28,9 @@ if %errorlevel% equ 0 (
 )
 
 echo [ERROR] Docker Compose is not installed
+echo.
+echo Press any key to exit...
+pause >nul
 exit /b 1
 
 :compose_found
@@ -49,6 +52,9 @@ if %errorlevel% equ 0 (
 ) else (
     echo [ERROR] Failed to stop services
     echo Please check the error messages above
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 )
 
