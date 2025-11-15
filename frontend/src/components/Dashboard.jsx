@@ -36,8 +36,8 @@ function Dashboard({ user, onLogout }) {
         `${API_BASE_URL}/transactions/history/${user.walletNumber}`
       );
       if (response.data.success) {
-        // Ensure transactions is always an array
-        const txnData = response.data.data;
+        // Extract transactions array from TransactionHistoryResponse object
+        const txnData = response.data.data.transactions || [];
         setTransactions(Array.isArray(txnData) ? txnData : []);
       }
     } catch (error) {
@@ -303,7 +303,7 @@ function Dashboard({ user, onLogout }) {
               ) : (
                 <Box>
                   {transactions.slice(0, 10).map((txn) => (
-                    <Box key={txn.transactionId}>
+                    <Box key={txn.id}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -318,24 +318,24 @@ function Dashboard({ user, onLogout }) {
                               width: 40,
                               height: 40,
                               borderRadius: '50%',
-                              bgcolor: txn.type === 'DEPOSIT' ? 'success.light' : 
-                                      txn.type === 'WITHDRAWAL' ? 'error.light' : 'info.light',
+                              bgcolor: ['CREDIT', 'TOP_UP', 'TRANSFER_IN'].includes(txn.transactionType) ? 'success.light' :
+                                      ['DEBIT', 'WITHDRAWAL', 'TRANSFER_OUT'].includes(txn.transactionType) ? 'error.light' : 'info.light',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               mr: 2
                             }}
                           >
-                            {txn.type === 'DEPOSIT' && <Add />}
-                            {txn.type === 'WITHDRAWAL' && <Remove />}
-                            {txn.type === 'TRANSFER' && <Send />}
+                            {['CREDIT', 'TOP_UP', 'TRANSFER_IN'].includes(txn.transactionType) && <Add />}
+                            {['DEBIT', 'WITHDRAWAL', 'TRANSFER_OUT'].includes(txn.transactionType) && <Remove />}
+                            {['PAYMENT', 'REFUND'].includes(txn.transactionType) && <Send />}
                           </Box>
                           <Box>
                             <Typography variant="body1" fontWeight="medium">
                               {txn.description}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              {formatDate(txn.createdAt)} • {txn.transactionReference}
+                              {formatDate(txn.createdAt)} • {txn.transactionRef}
                             </Typography>
                           </Box>
                         </Box>
@@ -343,16 +343,16 @@ function Dashboard({ user, onLogout }) {
                           <Typography
                             variant="h6"
                             color={
-                              txn.senderWalletNumber === user.walletNumber ? 'error.main' : 'success.main'
+                              ['CREDIT', 'TOP_UP', 'TRANSFER_IN'].includes(txn.transactionType) ? 'success.main' : 'error.main'
                             }
                           >
-                            {txn.senderWalletNumber === user.walletNumber ? '-' : '+'}
+                            {['CREDIT', 'TOP_UP', 'TRANSFER_IN'].includes(txn.transactionType) ? '+' : '-'}
                             {formatCurrency(txn.amount)}
                           </Typography>
-                          <Chip 
-                            label={txn.status} 
-                            size="small" 
-                            color={txn.status === 'COMPLETED' ? 'success' : 'default'}
+                          <Chip
+                            label={txn.transactionStatus}
+                            size="small"
+                            color={txn.transactionStatus === 'COMPLETED' ? 'success' : 'default'}
                           />
                         </Box>
                       </Box>
