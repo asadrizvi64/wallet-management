@@ -1,6 +1,7 @@
 package com.enterprise.wallet.service;
 
 import com.enterprise.wallet.dto.OtherDTOs.*;
+import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.entity.*;
 import com.enterprise.wallet.exception.InvalidOperationException;
 import com.enterprise.wallet.exception.ResourceNotFoundException;

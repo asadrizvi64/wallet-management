@@ -28,7 +28,7 @@ public class UserService {
      */
     @Transactional
     public User registerUser(String username, String email, String password,
-                            String fullName, String phoneNumber) {
+                            String fullName, String phoneNumber, String cnicNumber) {
 
         // Validate unique constraints
         if (userRepository.existsByEmail(email)) {
@@ -48,6 +48,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setFullName(fullName);
         user.setPhoneNumber(phoneNumber);
+        user.setCnicNumber(cnicNumber);
         user.setKycStatus(User.KycStatus.PENDING);
         user.setUserRole(User.UserRole.USER);
         user.setIsActive(true);
