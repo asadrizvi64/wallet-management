@@ -11,6 +11,7 @@ const API_BASE_URL = '/api/v1';
 function Register({ onRegister }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
     fullName: '',
@@ -92,6 +93,18 @@ function Register({ onRegister }) {
               autoFocus
               value={formData.fullName}
               onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              value={formData.username}
+              onChange={handleChange}
+              helperText="Choose a unique username (3-50 characters)"
             />
             <TextField
               margin="normal"
