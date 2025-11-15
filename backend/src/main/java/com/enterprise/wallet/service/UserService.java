@@ -27,36 +27,36 @@ public class UserService {
      * API 1: Register new user
      */
     @Transactional
-    public User registerUser(String email, String password, String fullName, 
-                            String phoneNumber, String cnicNumber) {
-        
+    public User registerUser(String username, String email, String password,
+                            String fullName, String phoneNumber) {
+
         // Validate unique constraints
         if (userRepository.existsByEmail(email)) {
             throw new RuntimeException("Email already registered");
         }
-        if (userRepository.existsByPhoneNumber(phoneNumber)) {
+        if (userRepository.existsByUsername(username)) {
+            throw new RuntimeException("Username already taken");
+        }
+        if (phoneNumber != null && userRepository.existsByPhoneNumber(phoneNumber)) {
             throw new RuntimeException("Phone number already registered");
         }
-        if (cnicNumber != null && userRepository.existsByCnicNumber(cnicNumber)) {
-            throw new RuntimeException("CNIC already registered");
-        }
-        
+
         // Create user
         User user = new User();
+        user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setFullName(fullName);
         user.setPhoneNumber(phoneNumber);
-        user.setCnicNumber(cnicNumber);
         user.setKycStatus(User.KycStatus.PENDING);
-        user.setRole(User.UserRole.USER);
+        user.setUserRole(User.UserRole.USER);
         user.setIsActive(true);
-        
+
         User savedUser = userRepository.save(user);
-        
+
         // Auto-create wallet for user
         createWalletForUser(savedUser);
-        
+
         return savedUser;
     }
     
@@ -127,10 +127,9 @@ public class UserService {
         wallet.setUser(user);
         wallet.setBalance(BigDecimal.ZERO);
         wallet.setCurrency("PKR");
-        wallet.setStatus(Wallet.WalletStatus.ACTIVE);
-        wallet.setDailyLimit(new BigDecimal("100000.00"));
-        wallet.setMonthlyLimit(new BigDecimal("500000.00"));
-        
+        wallet.setWalletStatus(Wallet.WalletStatus.ACTIVE);
+        wallet.setWalletType(Wallet.WalletType.PERSONAL);
+
         walletRepository.save(wallet);
     }
     

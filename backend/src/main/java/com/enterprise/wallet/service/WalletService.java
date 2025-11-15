@@ -3,7 +3,7 @@ package com.enterprise.wallet.service;
 import com.enterprise.wallet.dto.*;
 import com.enterprise.wallet.exception.ResourceNotFoundException;
 import com.enterprise.wallet.exception.WalletException;
-import com.enterprise.wallet.model.*;
+import com.enterprise.wallet.entity.*;
 import com.enterprise.wallet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

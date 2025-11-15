@@ -5,6 +5,7 @@ import com.enterprise.wallet.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,10 +15,10 @@ import java.util.Optional;
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
     
     Optional<Wallet> findByWalletNumber(String walletNumber);
-    
+
     Optional<Wallet> findByUser(User user);
-    
-    Optional<Wallet> findByUser_UserId(Long userId);
-    
+
+    List<Wallet> findByUserId(Long userId);
+
     boolean existsByWalletNumber(String walletNumber);
 }
