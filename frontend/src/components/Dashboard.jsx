@@ -87,8 +87,9 @@ function Dashboard({ user, onLogout }) {
         `${API_BASE_URL}/wallets/${user.walletNumber}/withdraw`,
         {
           amount: parseFloat(formData.amount),
-          bankAccount: formData.bankAccount || 'XXXXX1234',
-          ifscCode: formData.ifscCode || 'XXXXX0000'
+          paymentMethod: 'BANK_TRANSFER',
+          bankAccount: formData.bankAccount,
+          ifscCode: formData.ifscCode
         }
       );
       
@@ -407,6 +408,15 @@ function Dashboard({ user, onLogout }) {
               fullWidth
               value={formData.bankAccount || ''}
               onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              margin="dense"
+              label="IFSC Code"
+              fullWidth
+              value={formData.ifscCode || ''}
+              onChange={(e) => setFormData({ ...formData, ifscCode: e.target.value })}
+              placeholder="e.g., XXXXX0000"
             />
           </DialogContent>
           <DialogActions>

@@ -120,9 +120,10 @@ public class WalletController {
         withdrawRequest.setWalletId(wallet.getId());
         withdrawRequest.setAmount(request.getAmount());
         withdrawRequest.setPaymentMethod(request.getPaymentMethod());
-        withdrawRequest.setDescription(request.getBankAccountRef() != null
-                ? "Bank Account Ref: " + request.getBankAccountRef()
-                : "Withdraw money via wallet number");
+        withdrawRequest.setBankAccount(request.getBankAccount());
+        withdrawRequest.setIfscCode(request.getIfscCode());
+        withdrawRequest.setDescription(String.format("Withdrawal to Bank Account: %s, IFSC: %s",
+                request.getBankAccount(), request.getIfscCode()));
 
         TransactionResponse transaction = transactionService.withdrawMoney(withdrawRequest);
         return ResponseEntity.status(HttpStatus.CREATED)

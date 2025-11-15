@@ -104,6 +104,12 @@ public class TransactionDTOs {
         private String paymentMethod;
 
         private String bankAccountRef;
+
+        @NotBlank(message = "Bank account number is required")
+        private String bankAccount;
+
+        @NotBlank(message = "IFSC code is required")
+        private String ifscCode;
     }
 
     @Data
@@ -121,6 +127,10 @@ public class TransactionDTOs {
         private String paymentMethod;
 
         private String description;
+
+        private String bankAccount;
+
+        private String ifscCode;
     }
 
     @Data
