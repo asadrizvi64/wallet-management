@@ -36,10 +36,13 @@ function Dashboard({ user, onLogout }) {
         `${API_BASE_URL}/transactions/history/${user.walletNumber}`
       );
       if (response.data.success) {
-        setTransactions(response.data.data);
+        // Ensure transactions is always an array
+        const txnData = response.data.data;
+        setTransactions(Array.isArray(txnData) ? txnData : []);
       }
     } catch (error) {
       console.error('Error fetching transactions:', error);
+      setTransactions([]); // Reset to empty array on error
     }
   }, [user.walletNumber]);
 
@@ -292,7 +295,7 @@ function Dashboard({ user, onLogout }) {
               </Typography>
               <Divider sx={{ my: 2 }} />
               
-              {transactions.length === 0 ? (
+              {!Array.isArray(transactions) || transactions.length === 0 ? (
                 <Typography variant="body2" color="text.secondary" textAlign="center" py={4}>
                   No transactions yet
                 </Typography>
