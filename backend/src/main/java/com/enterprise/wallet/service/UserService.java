@@ -63,19 +63,22 @@ public class UserService {
     
     /**
      * API 2: User login/authentication
+     * Accepts either email or username
      */
-    public User authenticateUser(String email, String password) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        
+    public User authenticateUser(String emailOrUsername, String password) {
+        // Try to find user by email first, then by username
+        User user = userRepository.findByEmail(emailOrUsername)
+            .orElse(userRepository.findByUsername(emailOrUsername)
+                .orElseThrow(() -> new RuntimeException("User not found")));
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-        
+
         if (!user.getIsActive()) {
             throw new RuntimeException("Account is deactivated");
         }
-        
+
         return user;
     }
     
