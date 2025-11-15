@@ -8,12 +8,16 @@ import {
   AccountBalanceWallet, Send, Logout, Add, Remove
 } from '@mui/icons-material';
 import axios from 'axios';
+import TransactionDetailModal from './TransactionDetailModal';
 
 const API_BASE_URL = '/api/v1';
 
 function Dashboard({ user, onLogout }) {
   const [walletData, setWalletData] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [limits, setLimits] = useState(null);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
   const [openDialog, setOpenDialog] = useState('');
   const [formData, setFormData] = useState({});
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -46,10 +50,24 @@ function Dashboard({ user, onLogout }) {
     }
   }, [user.walletNumber]);
 
+  const fetchLimits = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/wallets/${user.walletNumber}/limits`
+      );
+      if (response.data.success) {
+        setLimits(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching limits:', error);
+    }
+  }, [user.walletNumber]);
+
   useEffect(() => {
     fetchWalletData();
     fetchTransactions();
-  }, [fetchWalletData, fetchTransactions]);
+    fetchLimits();
+  }, [fetchWalletData, fetchTransactions, fetchLimits]);
 
   const handleAddMoney = async () => {
     setLoading(true);
@@ -234,7 +252,7 @@ function Dashboard({ user, onLogout }) {
                     Daily Limit
                   </Typography>
                   <Typography variant="body1">
-                    {walletData ? formatCurrency(walletData.dailyLimit) : '-'}
+                    {limits ? formatCurrency(limits.dailyLimit) : '-'}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -242,7 +260,39 @@ function Dashboard({ user, onLogout }) {
                     Daily Spent
                   </Typography>
                   <Typography variant="body1">
-                    {walletData ? formatCurrency(walletData.dailySpent) : '-'}
+                    {limits ? formatCurrency(limits.dailySpent) : '-'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Daily Remaining
+                  </Typography>
+                  <Typography variant="body1" color="success.main">
+                    {limits ? formatCurrency(limits.dailyRemaining) : '-'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Monthly Limit
+                  </Typography>
+                  <Typography variant="body1">
+                    {limits ? formatCurrency(limits.monthlyLimit) : '-'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Monthly Spent
+                  </Typography>
+                  <Typography variant="body1">
+                    {limits ? formatCurrency(limits.monthlySpent) : '-'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Per Transaction Limit
+                  </Typography>
+                  <Typography variant="body1">
+                    {limits ? formatCurrency(limits.perTransactionLimit) : '-'}
                   </Typography>
                 </Grid>
               </Grid>
@@ -306,11 +356,20 @@ function Dashboard({ user, onLogout }) {
                   {transactions.slice(0, 10).map((txn) => (
                     <Box key={txn.id}>
                       <Box
+                        onClick={() => {
+                          setSelectedTransaction(txn);
+                          setOpenDetailModal(true);
+                        }}
                         sx={{
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          py: 2
+                          py: 2,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            bgcolor: 'action.hover',
+                            borderRadius: 1
+                          }
                         }}
                       >
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -464,6 +523,16 @@ function Dashboard({ user, onLogout }) {
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Transaction Detail Modal */}
+        <TransactionDetailModal
+          open={openDetailModal}
+          onClose={() => {
+            setOpenDetailModal(false);
+            setSelectedTransaction(null);
+          }}
+          transaction={selectedTransaction}
+        />
       </Container>
     </Box>
   );

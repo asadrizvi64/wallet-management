@@ -175,6 +175,8 @@ public class TransactionDTOs {
         private Long id;
         private String transactionRef;
         private Long walletId;
+        private String senderWalletNumber;
+        private String senderName;
         private Transaction.TransactionType transactionType;
         private BigDecimal amount;
         private String currency;
@@ -183,6 +185,7 @@ public class TransactionDTOs {
         private Transaction.TransactionStatus transactionStatus;
         private String description;
         private String recipientWalletNumber;
+        private String recipientName;
         private String paymentMethod;
         private BigDecimal transactionFee;
         private LocalDateTime createdAt;
