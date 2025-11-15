@@ -1,6 +1,6 @@
 package com.enterprise.wallet.service;
 
-import com.enterprise.wallet.dto.*;
+import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.exception.InsufficientBalanceException;
 import com.enterprise.wallet.exception.ResourceNotFoundException;
 import com.enterprise.wallet.exception.TransactionException;
