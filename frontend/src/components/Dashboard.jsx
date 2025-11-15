@@ -1,32 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Box, Container, Grid, Paper, Typography, Button, AppBar, Toolbar, 
-  Card, CardContent, Divider, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Alert, Chip, IconButton, Tab, Tabs
+  Box, Container, Grid, Paper, Typography, Button, AppBar, Toolbar,
+  Divider, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField, Alert, Chip
 } from '@mui/material';
 import {
-  AccountBalanceWallet, Send, AttachMoney, AccountBalance, 
-  History, Logout, Add, Remove
+  AccountBalanceWallet, Send, Logout, Add, Remove
 } from '@mui/icons-material';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = '/api/v1';
 
 function Dashboard({ user, onLogout }) {
   const [walletData, setWalletData] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [selectedTab, setSelectedTab] = useState(0);
   const [openDialog, setOpenDialog] = useState('');
   const [formData, setFormData] = useState({});
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchWalletData();
-    fetchTransactions();
-  }, [user]);
-
-  const fetchWalletData = async () => {
+  const fetchWalletData = useCallback(async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/wallets/${user.walletNumber}`);
       if (response.data.success) {
@@ -35,9 +28,9 @@ function Dashboard({ user, onLogout }) {
     } catch (error) {
       console.error('Error fetching wallet data:', error);
     }
-  };
+  }, [user.walletNumber]);
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
       const response = await axios.get(
         `${API_BASE_URL}/transactions/history/${user.walletNumber}`
@@ -48,7 +41,12 @@ function Dashboard({ user, onLogout }) {
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
-  };
+  }, [user.walletNumber]);
+
+  useEffect(() => {
+    fetchWalletData();
+    fetchTransactions();
+  }, [fetchWalletData, fetchTransactions]);
 
   const handleAddMoney = async () => {
     setLoading(true);
