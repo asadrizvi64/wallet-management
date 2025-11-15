@@ -20,6 +20,9 @@ where java >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Java is not installed
     echo Please install Java 17 or higher
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 ) else (
     echo [OK] Java found
@@ -31,6 +34,9 @@ where mvn >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Maven is not installed
     echo Please install Maven 3.6 or higher
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 ) else (
     echo [OK] Maven found
@@ -42,6 +48,9 @@ where node >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Node.js is not installed
     echo Please install Node.js 16 or higher
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 ) else (
     echo [OK] Node.js found
@@ -53,6 +62,9 @@ where npm >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] npm is not installed
     echo Please install npm
+    echo.
+    echo Press any key to exit...
+    pause >nul
     exit /b 1
 ) else (
     echo [OK] npm found
