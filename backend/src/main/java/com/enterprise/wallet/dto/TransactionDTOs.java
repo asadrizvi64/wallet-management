@@ -95,6 +95,20 @@ public class TransactionDTOs {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class WalletWithdrawMoneyRequest {
+        @NotNull(message = "Amount is required")
+        @DecimalMin(value = "1.0", message = "Amount must be at least 1")
+        private BigDecimal amount;
+
+        @NotBlank(message = "Payment method is required")
+        private String paymentMethod;
+
+        private String bankAccountRef;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class WithdrawMoneyRequest {
         @NotNull(message = "Wallet ID is required")
         private Long walletId;

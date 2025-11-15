@@ -35,34 +35,40 @@ public class WalletController {
     }
     
     // API 2: Get Wallet Details
-    @GetMapping("/{walletId}")
-    @Operation(summary = "Get wallet details", description = "Retrieves details of a specific wallet")
+    @GetMapping("/{walletNumber}")
+    @Operation(summary = "Get wallet details", description = "Retrieves details of a specific wallet by wallet number")
     public ResponseEntity<ApiResponse<WalletResponse>> getWalletDetails(
-            @PathVariable Long walletId) {
-        
-        WalletResponse wallet = walletService.getWalletDetails(walletId);
-        return ResponseEntity.ok(ApiResponse.success("Wallet details retrieved", wallet));
+            @PathVariable String walletNumber) {
+
+        // Get wallet by wallet number first
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        WalletResponse walletResponse = walletService.getWalletDetails(wallet.getId());
+        return ResponseEntity.ok(ApiResponse.success("Wallet details retrieved", walletResponse));
     }
     
     // API 3: Get Wallet Balance
-    @GetMapping("/{walletId}/balance")
-    @Operation(summary = "Get wallet balance", description = "Retrieves current balance of a wallet")
+    @GetMapping("/{walletNumber}/balance")
+    @Operation(summary = "Get wallet balance", description = "Retrieves current balance of a wallet by wallet number")
     public ResponseEntity<ApiResponse<WalletBalanceResponse>> getWalletBalance(
-            @PathVariable Long walletId) {
-        
-        WalletBalanceResponse balance = walletService.getWalletBalance(walletId);
+            @PathVariable String walletNumber) {
+
+        // Get wallet by wallet number first
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        WalletBalanceResponse balance = walletService.getWalletBalance(wallet.getId());
         return ResponseEntity.ok(ApiResponse.success("Balance retrieved", balance));
     }
     
     // API 4: Update Wallet Status
-    @PutMapping("/{walletId}/status")
-    @Operation(summary = "Update wallet status", description = "Changes the status of a wallet (ACTIVE, FROZEN, BLOCKED)")
+    @PutMapping("/{walletNumber}/status")
+    @Operation(summary = "Update wallet status", description = "Changes the status of a wallet (ACTIVE, FROZEN, BLOCKED) by wallet number")
     public ResponseEntity<ApiResponse<WalletResponse>> updateWalletStatus(
-            @PathVariable Long walletId,
+            @PathVariable String walletNumber,
             @Valid @RequestBody UpdateWalletStatusRequest request) {
-        
-        WalletResponse wallet = walletService.updateWalletStatus(walletId, request);
-        return ResponseEntity.ok(ApiResponse.success("Wallet status updated", wallet));
+
+        // Get wallet by wallet number first
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        WalletResponse walletResponse = walletService.updateWalletStatus(wallet.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Wallet status updated", walletResponse));
     }
     
     // API 5: Get User Wallets
@@ -97,5 +103,29 @@ public class WalletController {
         TransactionResponse transaction = transactionService.addMoney(addMoneyRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Money added successfully", transaction));
+    }
+
+    // API 7: Withdraw Money from Wallet (by wallet number)
+    @PostMapping("/{walletNumber}/withdraw")
+    @Operation(summary = "Withdraw money from wallet", description = "Withdraws money from a wallet using wallet number")
+    public ResponseEntity<ApiResponse<TransactionResponse>> withdrawMoneyFromWallet(
+            @PathVariable String walletNumber,
+            @Valid @RequestBody WalletWithdrawMoneyRequest request) {
+
+        // Get wallet by wallet number
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+
+        // Convert to WithdrawMoneyRequest for TransactionService
+        WithdrawMoneyRequest withdrawRequest = new WithdrawMoneyRequest();
+        withdrawRequest.setWalletId(wallet.getId());
+        withdrawRequest.setAmount(request.getAmount());
+        withdrawRequest.setPaymentMethod(request.getPaymentMethod());
+        withdrawRequest.setDescription(request.getBankAccountRef() != null
+                ? "Bank Account Ref: " + request.getBankAccountRef()
+                : "Withdraw money via wallet number");
+
+        TransactionResponse transaction = transactionService.withdrawMoney(withdrawRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Money withdrawn successfully", transaction));
     }
 }

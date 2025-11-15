@@ -62,12 +62,22 @@ public class TransactionController {
         return ResponseEntity.ok(ApiResponse.success("Transaction details retrieved", transaction));
     }
     
-    // API 10: Get Transaction History
-    @GetMapping("/wallet/{walletId}/history")
-    @Operation(summary = "Get transaction history", description = "Retrieves all transactions for a wallet")
+    // API 10: Get Transaction History (by wallet number)
+    @GetMapping("/history/{walletNumber}")
+    @Operation(summary = "Get transaction history", description = "Retrieves all transactions for a wallet by wallet number")
     public ResponseEntity<ApiResponse<TransactionHistoryResponse>> getTransactionHistory(
+            @PathVariable String walletNumber) {
+
+        TransactionHistoryResponse history = transactionService.getTransactionHistoryByWalletNumber(walletNumber);
+        return ResponseEntity.ok(ApiResponse.success("Transaction history retrieved", history));
+    }
+
+    // API 10b: Get Transaction History (by wallet ID - for backward compatibility)
+    @GetMapping("/wallet/{walletId}/history")
+    @Operation(summary = "Get transaction history by wallet ID", description = "Retrieves all transactions for a wallet by wallet ID")
+    public ResponseEntity<ApiResponse<TransactionHistoryResponse>> getTransactionHistoryById(
             @PathVariable Long walletId) {
-        
+
         TransactionHistoryResponse history = transactionService.getTransactionHistory(walletId);
         return ResponseEntity.ok(ApiResponse.success("Transaction history retrieved", history));
     }
