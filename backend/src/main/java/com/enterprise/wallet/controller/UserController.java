@@ -55,7 +55,7 @@ public class UserController {
             );
 
             return ResponseEntity.ok(
-                ApiResponse.success(response, "User registered successfully")
+                ApiResponse.success("User registered successfully", response)
             );
             
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class UserController {
             );
 
             return ResponseEntity.ok(
-                ApiResponse.success(response, "Login successful")
+                ApiResponse.success("Login successful", response)
             );
             
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class UserController {
             );
 
             return ResponseEntity.ok(
-                ApiResponse.success(response, "Profile updated successfully")
+                ApiResponse.success("Profile updated successfully", response)
             );
             
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class UserController {
             );
 
             return ResponseEntity.ok(
-                ApiResponse.success(response, "User details retrieved")
+                ApiResponse.success("User details retrieved", response)
             );
             
         } catch (Exception e) {
