@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Box, Container, Grid, Paper, Typography, Button, AppBar, Toolbar,
   Divider, Dialog, DialogTitle, DialogContent,
@@ -62,6 +62,33 @@ function Dashboard({ user, onLogout }) {
       console.error('Error fetching limits:', error);
     }
   }, [user.walletNumber]);
+
+  // Extract recent recipients from TRANSFER_OUT transactions
+  const recentRecipients = useMemo(() => {
+    if (!Array.isArray(transactions)) return [];
+
+    const transferOutTxns = transactions.filter(
+      txn => txn.transactionType === 'TRANSFER_OUT' && txn.recipientWalletNumber
+    );
+
+    // Create a map to track unique recipients (by wallet number)
+    const recipientMap = new Map();
+
+    transferOutTxns.forEach(txn => {
+      if (!recipientMap.has(txn.recipientWalletNumber)) {
+        recipientMap.set(txn.recipientWalletNumber, {
+          walletNumber: txn.recipientWalletNumber,
+          name: txn.recipientName || 'Unknown',
+          lastTransferDate: txn.createdAt
+        });
+      }
+    });
+
+    // Convert to array and sort by most recent
+    return Array.from(recipientMap.values())
+      .sort((a, b) => new Date(b.lastTransferDate) - new Date(a.lastTransferDate))
+      .slice(0, 5); // Show top 5 recent recipients
+  }, [transactions]);
 
   useEffect(() => {
     fetchWalletData();
@@ -490,6 +517,48 @@ function Dashboard({ user, onLogout }) {
         <Dialog open={openDialog === 'transfer'} onClose={() => setOpenDialog('')}>
           <DialogTitle>Transfer Money</DialogTitle>
           <DialogContent>
+            {/* Recent Recipients Section */}
+            {recentRecipients.length > 0 && (
+              <Box sx={{ mb: 3, mt: 1 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Recent Recipients
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {recentRecipients.map((recipient) => (
+                    <Chip
+                      key={recipient.walletNumber}
+                      label={
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                          <Typography variant="caption" fontWeight="medium">
+                            {recipient.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                            {recipient.walletNumber}
+                          </Typography>
+                        </Box>
+                      }
+                      onClick={() => setFormData({
+                        ...formData,
+                        recipientWallet: recipient.walletNumber
+                      })}
+                      variant={formData.recipientWallet === recipient.walletNumber ? "filled" : "outlined"}
+                      color={formData.recipientWallet === recipient.walletNumber ? "primary" : "default"}
+                      sx={{
+                        cursor: 'pointer',
+                        height: 'auto',
+                        py: 0.5,
+                        '& .MuiChip-label': {
+                          px: 1.5,
+                          py: 0.5
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+                <Divider sx={{ mt: 2 }} />
+              </Box>
+            )}
+
             <TextField
               autoFocus
               margin="dense"
