@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import EditProfile from './components/EditProfile';
 import './App.css';
 
 const theme = createTheme({
@@ -59,11 +60,17 @@ function App() {
                 user ? <Navigate to="/dashboard" /> : <Register onRegister={handleLogin} />
               } 
             />
-            <Route 
-              path="/dashboard" 
+            <Route
+              path="/dashboard"
               element={
                 user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />
-              } 
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                user ? <EditProfile /> : <Navigate to="/login" />
+              }
             />
             <Route path="/" element={<Navigate to="/login" />} />
           </Routes>
