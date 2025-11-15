@@ -1,6 +1,7 @@
 package com.enterprise.wallet.controller;
 
-import com.enterprise.wallet.dto.WalletDTOs.*;
+import com.enterprise.wallet.dto.UserDTOs.*;
+import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.entity.User;
 import com.enterprise.wallet.entity.Wallet;
 import com.enterprise.wallet.service.UserService;
