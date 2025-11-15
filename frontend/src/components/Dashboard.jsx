@@ -113,14 +113,15 @@ function Dashboard({ user, onLogout }) {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/transactions/transfer?senderWalletNumber=${user.walletNumber}`,
+        `${API_BASE_URL}/transactions/transfer`,
         {
-          recipientWalletNumber: formData.recipientWallet,
+          fromWalletId: walletData.id,
+          toWalletNumber: formData.recipientWallet,
           amount: parseFloat(formData.amount),
           description: formData.description || 'Money transfer'
         }
       );
-      
+
       if (response.data.success) {
         setMessage({ type: 'success', text: 'Transfer successful!' });
         fetchWalletData();
@@ -129,9 +130,9 @@ function Dashboard({ user, onLogout }) {
         setFormData({});
       }
     } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: error.response?.data?.message || 'Transfer failed' 
+      setMessage({
+        type: 'error',
+        text: error.response?.data?.message || 'Transfer failed'
       });
     } finally {
       setLoading(false);
