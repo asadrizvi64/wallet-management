@@ -351,37 +351,58 @@ public class TransactionService {
     }
     
     private void checkTransactionLimit(Wallet wallet, BigDecimal amount) {
+        // Auto-create transaction limits if not configured
         TransactionLimit limit = limitRepository.findByWalletId(wallet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Transaction limits not configured"));
-        
+                .orElseGet(() -> createDefaultTransactionLimits(wallet));
+
         // Reset if needed
         if (!limit.getLastResetDate().equals(java.time.LocalDate.now())) {
             limit.setDailySpent(BigDecimal.ZERO);
             limit.setLastResetDate(java.time.LocalDate.now());
         }
-        
+
         if (amount.compareTo(limit.getPerTransactionLimit()) > 0) {
             throw new TransactionException("Amount exceeds per transaction limit");
         }
-        
+
         if (limit.getDailySpent().add(amount).compareTo(limit.getDailyLimit()) > 0) {
             throw new TransactionException("Daily limit exceeded");
         }
-        
+
         if (limit.getMonthlySpent().add(amount).compareTo(limit.getMonthlyLimit()) > 0) {
             throw new TransactionException("Monthly limit exceeded");
         }
     }
     
     private void updateSpendingLimits(Wallet wallet, BigDecimal amount) {
+        // Auto-create transaction limits if not configured
         TransactionLimit limit = limitRepository.findByWalletId(wallet.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Transaction limits not configured"));
-        
+                .orElseGet(() -> createDefaultTransactionLimits(wallet));
+
         limit.setDailySpent(limit.getDailySpent().add(amount));
         limit.setMonthlySpent(limit.getMonthlySpent().add(amount));
         limitRepository.save(limit);
     }
     
+    private TransactionLimit createDefaultTransactionLimits(Wallet wallet) {
+        log.info("Creating default transaction limits for existing wallet ID: {}", wallet.getId());
+
+        TransactionLimit limit = new TransactionLimit();
+        limit.setWallet(wallet);
+        limit.setDailyLimit(new BigDecimal("50000"));
+        limit.setMonthlyLimit(new BigDecimal("500000"));
+        limit.setPerTransactionLimit(new BigDecimal("25000"));
+        limit.setDailySpent(BigDecimal.ZERO);
+        limit.setMonthlySpent(BigDecimal.ZERO);
+        limit.setLastResetDate(java.time.LocalDate.now());
+        limit.setMonthlyResetDate(java.time.LocalDate.now());
+
+        TransactionLimit saved = limitRepository.save(limit);
+        log.info("Default transaction limits created successfully for wallet ID: {}", wallet.getId());
+
+        return saved;
+    }
+
     private void createNotification(Wallet wallet, String title, String message) {
         WalletNotification notification = new WalletNotification();
         notification.setWallet(wallet);
