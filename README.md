@@ -37,6 +37,7 @@ This is a complete, production-ready Wallet Management System built as an Enterp
 
 **Frontend:**
 - React 18
+- Vite (Build Tool)
 - Material-UI (MUI)
 - Axios
 - React Router
@@ -85,12 +86,14 @@ wallet-management/
 ### Prerequisites
 
 - Java 17 or higher
-- Node.js 16+ and npm
+- Node.js 18+ and npm
 - MySQL 8.0
 - Maven 3.6+
 - Postman (for API testing)
 
-**📌 Windows Users**: See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for detailed Windows-specific setup and direct CLI commands.
+**📌 Important**:
+- See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) if you encounter any setup issues
+- Windows Users: See [WINDOWS_SETUP.md](WINDOWS_SETUP.md) for detailed Windows-specific setup
 
 ### Step 1: Database Setup
 
@@ -415,22 +418,65 @@ Email: ali@example.com
 
 ---
 
+## 🔄 Recent Updates (November 2024)
+
+### ⚠️ IMPORTANT: Frontend Migration to Vite
+
+**The frontend has been migrated from Create React App to Vite for better performance.**
+
+If you're experiencing issues like:
+- `Invalid options object. Dev Server has been initialized using an options object that does not match the API schema`
+- `options.allowedHosts[0] should be a non-empty string`
+
+**You need to update your local code:**
+
+```bash
+cd frontend
+git checkout -- package-lock.json  # Discard local changes
+git pull origin main                # Get latest code
+npm install                         # Reinstall dependencies
+npm start                           # Now runs Vite instead of react-scripts
+```
+
+**See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions.**
+
+### What Changed?
+
+- ✅ **Vite Build System** - Faster development and builds
+- ✅ **CI/CD Pipeline** - Automated testing and deployment
+- ✅ **Docker Support** - Optional containerization
+- ✅ **Environment Configuration** - Better config management
+
+---
+
 ## 🐛 Troubleshooting
+
+**For detailed troubleshooting, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)**
 
 ### Common Issues
 
-**1. Batch Files Close Immediately**
+**1. Dev Server Error (allowedHosts)**
 ```
-Solution: The batch files now show error messages before closing.
-If they still close, see WINDOWS_SETUP.md for direct CLI commands.
+Solution: Update your local code - see "Recent Updates" section above
 ```
 
-**2. Database Connection Error**
+**2. Git Merge Conflict (package-lock.json)**
+```
+Solution: git checkout -- frontend/package-lock.json && git pull origin main
+```
+
+**3. CI/CD Docker Login Error**
+```
+Solution: Add DOCKER_USERNAME and DOCKER_PASSWORD secrets in GitHub Settings
+Or the pipeline will skip Docker build automatically
+```
+
+**4. Database Connection Error**
 ```
 Solution: Check MySQL is running and credentials in application.properties
 ```
 
-**3. Port Already in Use**
+**5. Port Already in Use**
 ```
 Backend (8080): Change server.port in application.properties
 Frontend (3000): Use PORT=3001 npm start
@@ -438,7 +484,7 @@ Frontend (3000): Use PORT=3001 npm start
 Windows: See WINDOWS_SETUP.md for commands to find and kill processes
 ```
 
-**4. CORS Error**
+**6. CORS Error**
 ```
 Solution: Verify CORS configuration in SecurityConfig.java
 ```
