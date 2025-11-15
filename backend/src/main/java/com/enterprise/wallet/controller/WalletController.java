@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/wallets")
+@RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
 @Tag(name = "Wallet Management", description = "APIs for wallet operations")
 public class WalletController {
-    
+
     private final WalletService walletService;
+    private final com.enterprise.wallet.service.TransactionService transactionService;
     
     // API 1: Create Wallet
     @PostMapping("/create")
@@ -69,8 +70,32 @@ public class WalletController {
     @Operation(summary = "Get all wallets of a user", description = "Retrieves all wallets belonging to a user")
     public ResponseEntity<ApiResponse<List<WalletResponse>>> getUserWallets(
             @PathVariable Long userId) {
-        
+
         List<WalletResponse> wallets = walletService.getUserWallets(userId);
         return ResponseEntity.ok(ApiResponse.success("User wallets retrieved", wallets));
+    }
+
+    // API 6: Add Money to Wallet (by wallet number)
+    @PostMapping("/{walletNumber}/add-money")
+    @Operation(summary = "Add money to wallet", description = "Adds money to a wallet using wallet number")
+    public ResponseEntity<ApiResponse<TransactionResponse>> addMoneyToWallet(
+            @PathVariable String walletNumber,
+            @Valid @RequestBody WalletAddMoneyRequest request) {
+
+        // Get wallet by wallet number
+        com.enterprise.wallet.entity.Wallet wallet = walletService.getWalletByNumber(walletNumber);
+
+        // Convert to AddMoneyRequest for TransactionService
+        AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
+        addMoneyRequest.setWalletId(wallet.getId());
+        addMoneyRequest.setAmount(request.getAmount());
+        addMoneyRequest.setPaymentMethod(request.getPaymentMethod());
+        addMoneyRequest.setDescription(request.getPaymentGatewayRef() != null
+                ? "Payment Gateway Ref: " + request.getPaymentGatewayRef()
+                : "Add money via wallet number");
+
+        TransactionResponse transaction = transactionService.addMoney(addMoneyRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Money added successfully", transaction));
     }
 }
