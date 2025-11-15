@@ -159,4 +159,13 @@ public class WalletService {
         return walletRepository.findByWalletNumber(walletNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found with number: " + walletNumber));
     }
+
+    public Wallet getWalletByUserId(Long userId) {
+        List<Wallet> wallets = walletRepository.findByUserId(userId);
+        if (wallets.isEmpty()) {
+            throw new ResourceNotFoundException("No wallet found for user ID: " + userId);
+        }
+        // Return the first wallet (primary wallet)
+        return wallets.get(0);
+    }
 }
