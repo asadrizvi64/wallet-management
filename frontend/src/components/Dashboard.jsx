@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box, Container, Grid, Paper, Typography, Button, AppBar, Toolbar,
   Divider, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField, Alert, Chip
 } from '@mui/material';
 import {
-  AccountBalanceWallet, Send, Logout, Add, Remove
+  AccountBalanceWallet, Send, Logout, Add, Remove, Person
 } from '@mui/icons-material';
 import axios from 'axios';
 import TransactionDetailModal from './TransactionDetailModal';
@@ -13,6 +14,7 @@ import TransactionDetailModal from './TransactionDetailModal';
 const API_BASE_URL = '/api/v1';
 
 function Dashboard({ user, onLogout }) {
+  const navigate = useNavigate();
   const [walletData, setWalletData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [limits, setLimits] = useState(null);
@@ -214,6 +216,9 @@ function Dashboard({ user, onLogout }) {
           <Typography variant="body2" sx={{ mr: 2 }}>
             {user.fullName}
           </Typography>
+          <Button color="inherit" onClick={() => navigate('/profile')} startIcon={<Person />} sx={{ mr: 1 }}>
+            Profile
+          </Button>
           <Button color="inherit" onClick={onLogout} startIcon={<Logout />}>
             Logout
           </Button>
