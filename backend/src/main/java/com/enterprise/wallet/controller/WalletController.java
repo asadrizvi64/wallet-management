@@ -1,5 +1,6 @@
 package com.enterprise.wallet.controller;
 
+import com.enterprise.wallet.dto.ApiResponse;
 import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.service.WalletService;
 import io.swagger.v3.oas.annotations.Operation;
