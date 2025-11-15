@@ -33,6 +33,7 @@ public class UserController {
         
         try {
             User user = userService.registerUser(
+                request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
                 request.getFullName(),
@@ -40,10 +41,10 @@ public class UserController {
                 request.getCnicNumber()
             );
             
-            Wallet wallet = walletService.getWalletByUserId(user.getUserId());
-            
+            Wallet wallet = walletService.getWalletByUserId(user.getId());
+
             UserProfileResponse response = new UserProfileResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
@@ -52,7 +53,7 @@ public class UserController {
                 wallet.getWalletNumber(),
                 wallet.getBalance()
             );
-            
+
             return ResponseEntity.ok(
                 ApiResponse.success(response, "User registered successfully")
             );
@@ -78,19 +79,19 @@ public class UserController {
                 request.getPassword()
             );
             
-            Wallet wallet = walletService.getWalletByUserId(user.getUserId());
-            
+            Wallet wallet = walletService.getWalletByUserId(user.getId());
+
             // In real app, generate JWT token here
             String token = "TOKEN-" + System.currentTimeMillis();
-            
+
             LoginResponse response = new LoginResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getFullName(),
                 token,
                 wallet.getWalletNumber()
             );
-            
+
             return ResponseEntity.ok(
                 ApiResponse.success(response, "Login successful")
             );
@@ -118,10 +119,10 @@ public class UserController {
                 request.getPhoneNumber()
             );
             
-            Wallet wallet = walletService.getWalletByUserId(user.getUserId());
-            
+            Wallet wallet = walletService.getWalletByUserId(user.getId());
+
             UserProfileResponse response = new UserProfileResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
@@ -130,7 +131,7 @@ public class UserController {
                 wallet.getWalletNumber(),
                 wallet.getBalance()
             );
-            
+
             return ResponseEntity.ok(
                 ApiResponse.success(response, "Profile updated successfully")
             );
@@ -152,10 +153,10 @@ public class UserController {
         
         try {
             User user = userService.getUserById(userId);
-            Wallet wallet = walletService.getWalletByUserId(user.getUserId());
-            
+            Wallet wallet = walletService.getWalletByUserId(user.getId());
+
             UserProfileResponse response = new UserProfileResponse(
-                user.getUserId(),
+                user.getId(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
@@ -164,7 +165,7 @@ public class UserController {
                 wallet.getWalletNumber(),
                 wallet.getBalance()
             );
-            
+
             return ResponseEntity.ok(
                 ApiResponse.success(response, "User details retrieved")
             );

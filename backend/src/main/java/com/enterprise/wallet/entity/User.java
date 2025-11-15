@@ -46,7 +46,10 @@ public class User {
     
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
-    
+
+    @Column(name = "cnic_number", length = 20)
+    private String cnicNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "kyc_status", length = 20)
     private KycStatus kycStatus = KycStatus.PENDING;
