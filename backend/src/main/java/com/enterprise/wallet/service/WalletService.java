@@ -168,4 +168,101 @@ public class WalletService {
         // Return the first wallet (primary wallet)
         return wallets.get(0);
     }
+
+    // Get Wallet Details by Wallet Number
+    public WalletResponse getWalletDetailsByNumber(String walletNumber) {
+        Wallet wallet = getWalletByNumber(walletNumber);
+        return mapToWalletResponse(wallet);
+    }
+
+    // Add Money by Wallet Number (Convenience method)
+    public Object addMoneyByWalletNumber(String walletNumber, java.util.Map<String, Object> request) {
+        Wallet wallet = getWalletByNumber(walletNumber);
+
+        // Extract parameters from request
+        BigDecimal amount = new BigDecimal(request.get("amount").toString());
+        String paymentMethod = (String) request.getOrDefault("paymentMethod", "CARD");
+
+        // Store balance before
+        BigDecimal balanceBefore = wallet.getBalance();
+        BigDecimal balanceAfter = balanceBefore.add(amount);
+
+        // Create transaction
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setRecipientWallet(wallet);
+        transaction.setAmount(amount);
+        transaction.setTransactionType(Transaction.TransactionType.TOP_UP);
+        transaction.setTransactionStatus(Transaction.TransactionStatus.COMPLETED);
+        transaction.setTransactionRef("TXN-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase());
+        transaction.setDescription("Money added via " + paymentMethod);
+        transaction.setPaymentMethod(paymentMethod);
+        transaction.setBalanceBefore(balanceBefore);
+        transaction.setBalanceAfter(balanceAfter);
+        transaction.setCompletedAt(LocalDateTime.now());
+
+        // Update wallet balance
+        wallet.setBalance(balanceAfter);
+        walletRepository.save(wallet);
+
+        // Save transaction
+        Transaction savedTxn = transactionRepository.save(transaction);
+
+        log.info("Money added to wallet {}: {}", walletNumber, amount);
+
+        return java.util.Map.of(
+            "transactionId", savedTxn.getId(),
+            "transactionReference", savedTxn.getTransactionRef(),
+            "amount", amount,
+            "newBalance", wallet.getBalance(),
+            "status", "COMPLETED"
+        );
+    }
+
+    // Withdraw Money by Wallet Number (Convenience method)
+    public Object withdrawMoneyByWalletNumber(String walletNumber, java.util.Map<String, Object> request) {
+        Wallet wallet = getWalletByNumber(walletNumber);
+
+        // Extract parameters from request
+        BigDecimal amount = new BigDecimal(request.get("amount").toString());
+        String bankAccount = (String) request.getOrDefault("bankAccount", "XXXXX1234");
+
+        // Check balance
+        if (wallet.getBalance().compareTo(amount) < 0) {
+            throw new WalletException("Insufficient balance");
+        }
+
+        // Store balance before
+        BigDecimal balanceBefore = wallet.getBalance();
+        BigDecimal balanceAfter = balanceBefore.subtract(amount);
+
+        // Create transaction
+        Transaction transaction = new Transaction();
+        transaction.setWallet(wallet);
+        transaction.setAmount(amount);
+        transaction.setTransactionType(Transaction.TransactionType.WITHDRAWAL);
+        transaction.setTransactionStatus(Transaction.TransactionStatus.COMPLETED);
+        transaction.setTransactionRef("TXN-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase());
+        transaction.setDescription("Withdrawal to bank account " + bankAccount);
+        transaction.setBalanceBefore(balanceBefore);
+        transaction.setBalanceAfter(balanceAfter);
+        transaction.setCompletedAt(LocalDateTime.now());
+
+        // Update wallet balance
+        wallet.setBalance(balanceAfter);
+        walletRepository.save(wallet);
+
+        // Save transaction
+        Transaction savedTxn = transactionRepository.save(transaction);
+
+        log.info("Money withdrawn from wallet {}: {}", walletNumber, amount);
+
+        return java.util.Map.of(
+            "transactionId", savedTxn.getId(),
+            "transactionReference", savedTxn.getTransactionRef(),
+            "amount", amount,
+            "newBalance", wallet.getBalance(),
+            "status", "COMPLETED"
+        );
+    }
 }

@@ -405,4 +405,10 @@ public class TransactionService {
                 transaction.getCompletedAt()
         );
     }
+
+    // Get Transaction History by Wallet Number
+    public TransactionHistoryResponse getTransactionHistoryByWalletNumber(String walletNumber) {
+        Wallet wallet = walletService.getWalletByNumber(walletNumber);
+        return getTransactionHistory(wallet.getId());
+    }
 }

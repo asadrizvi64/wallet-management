@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor
 @Tag(name = "Transaction Management", description = "APIs for transaction operations")
 public class TransactionController {
@@ -62,13 +62,23 @@ public class TransactionController {
         return ResponseEntity.ok(ApiResponse.success("Transaction details retrieved", transaction));
     }
     
-    // API 10: Get Transaction History
-    @GetMapping("/wallet/{walletId}/history")
-    @Operation(summary = "Get transaction history", description = "Retrieves all transactions for a wallet")
+    // API 10: Get Transaction History by Wallet ID
+    @GetMapping("/wallet/id/{walletId}/history")
+    @Operation(summary = "Get transaction history by wallet ID", description = "Retrieves all transactions for a wallet by numeric ID")
     public ResponseEntity<ApiResponse<TransactionHistoryResponse>> getTransactionHistory(
             @PathVariable Long walletId) {
-        
+
         TransactionHistoryResponse history = transactionService.getTransactionHistory(walletId);
+        return ResponseEntity.ok(ApiResponse.success("Transaction history retrieved", history));
+    }
+
+    // API 10b: Get Transaction History by Wallet Number
+    @GetMapping("/history/{walletNumber}")
+    @Operation(summary = "Get transaction history by wallet number", description = "Retrieves all transactions for a wallet by wallet number")
+    public ResponseEntity<ApiResponse<TransactionHistoryResponse>> getTransactionHistoryByWalletNumber(
+            @PathVariable String walletNumber) {
+
+        TransactionHistoryResponse history = transactionService.getTransactionHistoryByWalletNumber(walletNumber);
         return ResponseEntity.ok(ApiResponse.success("Transaction history retrieved", history));
     }
     
