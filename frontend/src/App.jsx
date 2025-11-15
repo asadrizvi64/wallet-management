@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import EditProfile from './components/EditProfile';
+import AdminPanel from './components/AdminPanel';
 import './App.css';
 
 const theme = createTheme({
@@ -70,6 +71,12 @@ function App() {
               path="/profile"
               element={
                 user ? <EditProfile /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                user ? <AdminPanel /> : <Navigate to="/login" />
               }
             />
             <Route path="/" element={<Navigate to="/login" />} />

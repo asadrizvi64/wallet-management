@@ -79,6 +79,7 @@ public class UserDTOs {
         private Long userId;
         private String email;
         private String fullName;
+        private String userRole;
         private String token;
         private String walletNumber;
     }
@@ -105,13 +106,18 @@ public class UserDTOs {
     @AllArgsConstructor
     public static class UserProfileResponse {
         private Long userId;
+        private String username;
         private String email;
         private String fullName;
         private String phoneNumber;
         private String cnicNumber;
         private String kycStatus;
+        private String userRole;
+        private Boolean isActive;
         private String walletNumber;
         private BigDecimal balance;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
     @Data
@@ -120,5 +126,24 @@ public class UserDTOs {
     public static class UpdateUserRequest {
         private String fullName;
         private String phoneNumber;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AdminUserResponse {
+        private Long userId;
+        private String username;
+        private String email;
+        private String fullName;
+        private String phoneNumber;
+        private String cnicNumber;
+        private String kycStatus;
+        private String userRole;
+        private Boolean isActive;
+        private String walletNumber;
+        private BigDecimal balance;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }

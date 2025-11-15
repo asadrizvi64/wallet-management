@@ -6,7 +6,7 @@ import {
   DialogActions, TextField, Alert, Chip
 } from '@mui/material';
 import {
-  AccountBalanceWallet, Send, Logout, Add, Remove, Person
+  AccountBalanceWallet, Send, Logout, Add, Remove, Person, AdminPanelSettings
 } from '@mui/icons-material';
 import axios from 'axios';
 import TransactionDetailModal from './TransactionDetailModal';
@@ -216,6 +216,11 @@ function Dashboard({ user, onLogout }) {
           <Typography variant="body2" sx={{ mr: 2 }}>
             {user.fullName}
           </Typography>
+          {user.userRole === 'ADMIN' && (
+            <Button color="inherit" onClick={() => navigate('/admin')} startIcon={<AdminPanelSettings />} sx={{ mr: 1 }}>
+              Admin Panel
+            </Button>
+          )}
           <Button color="inherit" onClick={() => navigate('/profile')} startIcon={<Person />} sx={{ mr: 1 }}>
             Profile
           </Button>
