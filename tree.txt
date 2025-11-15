@@ -1,0 +1,93 @@
+wallet-management-system/
+│
+├── 📄 README.md                                    # Project overview and introduction
+├── 📄 QUICK_START.md                               # Quick setup and deployment guide
+├── 📄 INDEX.md                                     # Master navigation file
+├── 📄 SUBMISSION_GUIDE.md                          # Complete submission checklist
+├── 📄 docker-compose.yml                           # Docker orchestration file
+│
+├── 📁 backend/                                     # SPRING BOOT BACKEND
+│   │
+│   ├── 📄 pom.xml                                  # Maven dependencies
+│   ├── 📄 Dockerfile                               # Backend Docker configuration
+│   │
+│   └── 📁 src/
+│       │
+│       ├── 📁 main/
+│       │   │
+│       │   ├── 📁 java/
+│       │   │   └── 📁 com/
+│       │   │       └── 📁 enterprise/
+│       │   │           └── 📁 wallet/
+│       │   │               │
+│       │   │               ├── 📄 WalletManagementApplication.java    # Main application class
+│       │   │               │
+│       │   │               ├── 📁 entity/                             # DATABASE ENTITIES
+│       │   │               │   ├── 📄 User.java                       # User entity (users table)
+│       │   │               │   ├── 📄 Wallet.java                     # Wallet entity (wallets table)
+│       │   │               │   └── 📄 Transaction.java                # Transaction entity (transactions table)
+│       │   │               │
+│       │   │               ├── 📁 repository/                         # DATA ACCESS LAYER
+│       │   │               │   ├── 📄 UserRepository.java             # User database operations
+│       │   │               │   ├── 📄 WalletRepository.java           # Wallet database operations
+│       │   │               │   └── 📄 TransactionRepository.java      # Transaction database operations
+│       │   │               │
+│       │   │               ├── 📁 service/                            # BUSINESS LOGIC LAYER
+│       │   │               │   ├── 📄 UserService.java                # User management (5 APIs)
+│       │   │               │   ├── 📄 WalletService.java              # Wallet operations (6 APIs)
+│       │   │               │   └── 📄 TransactionService.java         # Transaction logic (9 APIs)
+│       │   │               │
+│       │   │               ├── 📁 controller/                         # REST API CONTROLLERS
+│       │   │               │   ├── 📄 UserController.java             # User API endpoints (5 endpoints)
+│       │   │               │   ├── 📄 WalletController.java           # Wallet API endpoints (5 endpoints)
+│       │   │               │   └── 📄 TransactionController.java      # Transaction API endpoints (10 endpoints)
+│       │   │               │
+│       │   │               ├── 📁 dto/                                # DATA TRANSFER OBJECTS
+│       │   │               │   └── 📄 WalletDTOs.java                 # Request/Response DTOs
+│       │   │               │
+│       │   │               └── 📁 config/                             # CONFIGURATION
+│       │   │                   └── 📄 SecurityConfig.java             # Security & CORS configuration
+│       │   │
+│       │   └── 📁 resources/
+│       │       └── 📄 application.properties                          # Application configuration
+│       │
+│       └── 📁 test/                                                   # (Test files not created, but structure shown)
+│           └── 📁 java/
+│               └── 📁 com/
+│                   └── 📁 enterprise/
+│                       └── 📁 wallet/
+│                           └── 📄 (Unit tests would go here)
+│
+├── 📁 frontend/                                    # REACT FRONTEND
+│   │
+│   ├── 📄 package.json                             # NPM dependencies
+│   ├── 📄 vite.config.js                           # Vite build configuration
+│   ├── 📄 index.html                               # HTML template
+│   ├── 📄 Dockerfile                               # Frontend Docker configuration
+│   ├── 📄 nginx.conf                               # Nginx web server config
+│   │
+│   └── 📁 src/
+│       │
+│       ├── 📄 main.jsx                             # React entry point
+│       ├── 📄 App.jsx                              # Main App component
+│       ├── 📄 App.css                              # App styles
+│       ├── 📄 index.css                            # Global styles
+│       │
+│       └── 📁 components/                          # REACT COMPONENTS
+│           ├── 📄 Login.jsx                        # Login page component
+│           ├── 📄 Register.jsx                     # Registration page component
+│           └── 📄 Dashboard.jsx                    # Main dashboard component
+│
+├── 📁 database/                                    # DATABASE FILES
+│   └── 📄 schema.sql                               # Complete MySQL schema + sample data
+│
+├── 📁 postman/                                     # API TESTING
+│   └── 📄 Wallet_Management_API.postman_collection.json   # Postman collection (20 APIs)
+│
+├── 📁 docs/                                        # DOCUMENTATION
+│   ├── 📄 PROJECT_DOCUMENTATION.md                 # Complete project documentation
+│   └── 📄 ERD_DIAGRAM.md                          # Database ERD and design
+│
+└── 📁 .github/                                     # CI/CD PIPELINE
+    └── 📁 workflows/
+        └── 📄 ci-cd.yml                            # GitHub Actions workflow

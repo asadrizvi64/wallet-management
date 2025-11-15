@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "Wallet Management System API",
+    "description": "Complete API collection for Wallet Management System with 20+ endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Test User\",\n  \"phoneNumber\": \"+923001234999\",\n  \"cnicNumber\": \"12345-1234567-9\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "2"]
+            }
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"phoneNumber\": \"+923009999999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "2"]
+            }
+          }
+        },
+        {
+          "name": "Verify KYC",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/2/kyc?approved=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "2", "kyc"],
+              "query": [
+                {
+                  "key": "approved",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet Operations",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets/WLT0000000002/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets", "WLT0000000002", "balance"]
+            }
+          }
+        },
+        {
+          "name": "Get Wallet Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets/WLT0000000002",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets", "WLT0000000002"]
+            }
+          }
+        },
+        {
+          "name": "Add Money to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 5000,\n  \"paymentMethod\": \"CARD\",\n  \"paymentGatewayRef\": \"PG-123456789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets/WLT0000000002/add-money",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets", "WLT0000000002", "add-money"]
+            }
+          }
+        },
+        {
+          "name": "Withdraw Money",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 2000,\n  \"bankAccount\": \"123456789\",\n  \"ifscCode\": \"BANK0001234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets/WLT0000000002/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets", "WLT0000000002", "withdraw"]
+            }
+          }
+        },
+        {
+          "name": "Update Wallet Status",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallets/WLT0000000002/status?status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "wallets", "WLT0000000002", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Operations",
+      "item": [
+        {
+          "name": "Transfer Money",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientWalletNumber\": \"WLT0000000001\",\n  \"amount\": 1000,\n  \"description\": \"Payment for services\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/transfer?senderWalletNumber=WLT0000000002",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "transfer"],
+              "query": [
+                {
+                  "key": "senderWalletNumber",
+                  "value": "WLT0000000002"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/history/WLT0000000002",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "history", "WLT0000000002"]
+            }
+          }
+        },
+        {
+          "name": "Get Transaction Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/TXN-20241115-000001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "TXN-20241115-000001"]
+            }
+          }
+        },
+        {
+          "name": "Download Statement",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/statement/WLT0000000002?startDate=2024-01-01T00:00:00&endDate=2024-12-31T23:59:59",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "statement", "WLT0000000002"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01T00:00:00"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31T23:59:59"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Transactions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/search/WLT0000000002?searchTerm=payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "search", "WLT0000000002"],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": "payment"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchantId\": \"MERCHANT-001\",\n  \"amount\": 500,\n  \"description\": \"Product purchase\",\n  \"orderId\": \"ORD-123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/payment?walletNumber=WLT0000000002",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "payment"],
+              "query": [
+                {
+                  "key": "walletNumber",
+                  "value": "WLT0000000002"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Refund Transaction",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/TXN-20241115-000003/refund",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "TXN-20241115-000003", "refund"]
+            }
+          }
+        },
+        {
+          "name": "Payment Gateway Callback",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/callback?gatewayRef=TXN-20241115-000001&success=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "callback"],
+              "query": [
+                {
+                  "key": "gatewayRef",
+                  "value": "TXN-20241115-000001"
+                },
+                {
+                  "key": "success",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payment Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/transactions/TXN-20241115-000001/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "transactions", "TXN-20241115-000001", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

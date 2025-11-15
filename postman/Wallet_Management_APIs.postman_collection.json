@@ -1,0 +1,277 @@
+{
+  "info": {
+    "name": "Wallet Management System APIs",
+    "description": "Complete API collection for Wallet Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"asad_khan\",\n  \"email\": \"asad@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Asad Khan\",\n  \"phoneNumber\": \"+92-300-1234567\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/auth/register"}
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"asad_khan\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/auth/login"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet Management",
+      "item": [
+        {
+          "name": "Create Wallet",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletType\": \"PERSONAL\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/wallets/create?userId=1"}
+          }
+        },
+        {
+          "name": "Get Wallet Details",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/wallets/1"}
+          }
+        },
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/wallets/1/balance"}
+          }
+        },
+        {
+          "name": "Update Wallet Status",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletStatus\": \"ACTIVE\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/wallets/1/status"}
+          }
+        },
+        {
+          "name": "Get User Wallets",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/wallets/user/1"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Add Money",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": 1,\n  \"amount\": 5000,\n  \"paymentMethod\": \"BANK_ACCOUNT\",\n  \"description\": \"Adding money to wallet\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/transactions/add-money"}
+          }
+        },
+        {
+          "name": "Withdraw Money",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": 1,\n  \"amount\": 1000,\n  \"paymentMethod\": \"BANK_ACCOUNT\",\n  \"description\": \"Withdrawing money\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/transactions/withdraw"}
+          }
+        },
+        {
+          "name": "Transfer Money",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromWalletId\": 1,\n  \"toWalletNumber\": \"WLT-001-2024-0002\",\n  \"amount\": 500,\n  \"description\": \"Transfer to friend\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/transactions/transfer"}
+          }
+        },
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": 1,\n  \"amount\": 250,\n  \"description\": \"Payment for service\",\n  \"merchantId\": \"MERCHANT123\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/transactions/payment"}
+          }
+        },
+        {
+          "name": "Get Transaction Details",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/transactions/TXN-2024-11-15-0001"}
+          }
+        },
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/transactions/wallet/1/history"}
+          }
+        },
+        {
+          "name": "Cancel Transaction",
+          "request": {
+            "method": "PUT",
+            "url": {"raw": "http://localhost:8080/api/transactions/TXN-REFERENCE/cancel"}
+          }
+        },
+        {
+          "name": "Refund Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionRef\": \"TXN-2024-11-15-0001\",\n  \"reason\": \"Customer request\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/transactions/refund"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment Links",
+      "item": [
+        {
+          "name": "Generate Payment Link",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": 1,\n  \"amount\": 1000,\n  \"description\": \"Payment for product\",\n  \"expiryHours\": 24\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/payment-links/generate"}
+          }
+        },
+        {
+          "name": "Verify Payment",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"linkCode\": \"LINK-CODE-HERE\",\n  \"payerWalletId\": 2\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/payment-links/verify"}
+          }
+        },
+        {
+          "name": "Get Gateway Status",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/payment-links/gateway/status"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaction Limits",
+      "item": [
+        {
+          "name": "Get Transaction Limits",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/limits/wallet/1"}
+          }
+        },
+        {
+          "name": "Set Transaction Limits",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dailyLimit\": 100000,\n  \"monthlyLimit\": 1000000,\n  \"perTransactionLimit\": 50000\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/limits/wallet/1"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Wallet Notifications",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/notifications/wallet/1"}
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "url": {"raw": "http://localhost:8080/api/notifications/1/read"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Reports",
+      "item": [
+        {
+          "name": "Generate Statement",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"walletId\": 1,\n  \"startDate\": \"2024-01-01T00:00:00\",\n  \"endDate\": \"2024-12-31T23:59:59\",\n  \"format\": \"PDF\"\n}"
+            },
+            "url": {"raw": "http://localhost:8080/api/analytics/statement"}
+          }
+        },
+        {
+          "name": "Get Spending Analytics",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/analytics/spending/1?startDate=2024-01-01T00:00:00&endDate=2024-12-31T23:59:59"}
+          }
+        }
+      ]
+    }
+  ]
+}
