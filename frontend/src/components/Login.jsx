@@ -74,12 +74,13 @@ function Login({ onLogin }) {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email or Username"
               name="email"
               autoComplete="email"
               autoFocus
               value={formData.email}
               onChange={handleChange}
+              helperText="Enter your email address or username"
             />
             <TextField
               margin="normal"
