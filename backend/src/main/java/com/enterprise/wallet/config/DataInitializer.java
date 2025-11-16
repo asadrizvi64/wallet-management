@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Random;
@@ -69,6 +70,7 @@ public class DataInitializer {
         };
     }
 
+    @Transactional
     private void createDemoSuperAdmin() {
         User superAdmin = new User();
         superAdmin.setUsername("superadmin");
@@ -87,6 +89,7 @@ public class DataInitializer {
         log.info("Created demo SUPERADMIN account");
     }
 
+    @Transactional
     private void createDemoAdmin() {
         User admin = new User();
         admin.setUsername("admin");
@@ -105,6 +108,7 @@ public class DataInitializer {
         log.info("Created demo ADMIN account");
     }
 
+    @Transactional
     private void createDemoUser() {
         User user = new User();
         user.setUsername("demouser");
