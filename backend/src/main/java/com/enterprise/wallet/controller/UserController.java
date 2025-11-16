@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * User Controller - REST APIs for user management
  * Base URL: /api/v1/users
@@ -45,13 +48,18 @@ public class UserController {
 
             UserProfileResponse response = new UserProfileResponse(
                 user.getId(),
+                user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
                 user.getCnicNumber(),
                 user.getKycStatus().toString(),
+                user.getUserRole().toString(),
+                user.getIsActive(),
                 wallet.getWalletNumber(),
-                wallet.getBalance()
+                wallet.getBalance(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
             );
 
             return ResponseEntity.ok(
@@ -88,6 +96,7 @@ public class UserController {
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
+                user.getUserRole().toString(),
                 token,
                 wallet.getWalletNumber()
             );
@@ -123,13 +132,18 @@ public class UserController {
 
             UserProfileResponse response = new UserProfileResponse(
                 user.getId(),
+                user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
                 user.getCnicNumber(),
                 user.getKycStatus().toString(),
+                user.getUserRole().toString(),
+                user.getIsActive(),
                 wallet.getWalletNumber(),
-                wallet.getBalance()
+                wallet.getBalance(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
             );
 
             return ResponseEntity.ok(
@@ -157,13 +171,18 @@ public class UserController {
 
             UserProfileResponse response = new UserProfileResponse(
                 user.getId(),
+                user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhoneNumber(),
                 user.getCnicNumber(),
                 user.getKycStatus().toString(),
+                user.getUserRole().toString(),
+                user.getIsActive(),
                 wallet.getWalletNumber(),
-                wallet.getBalance()
+                wallet.getBalance(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
             );
 
             return ResponseEntity.ok(
@@ -185,18 +204,105 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> verifyKyc(
             @PathVariable Long userId,
             @RequestParam boolean approved) {
-        
+
         try {
             User user = userService.verifyKyc(userId, approved);
-            
-            String message = approved ? 
-                "KYC verified successfully" : 
+
+            String message = approved ?
+                "KYC verified successfully" :
                 "KYC rejected";
-            
+
             return ResponseEntity.ok(
                 ApiResponse.success(user.getKycStatus().toString(), message)
             );
-            
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                ApiResponse.error(e.getMessage())
+            );
+        }
+    }
+
+    /**
+     * API 6: GET /api/v1/users
+     * Get all users (Admin endpoint)
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AdminUserResponse>>> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+
+            List<AdminUserResponse> response = users.stream()
+                .map(user -> {
+                    Wallet wallet = walletService.getWalletByUserId(user.getId());
+                    return new AdminUserResponse(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getFullName(),
+                        user.getPhoneNumber(),
+                        user.getCnicNumber(),
+                        user.getKycStatus().toString(),
+                        user.getUserRole().toString(),
+                        user.getIsActive(),
+                        wallet.getWalletNumber(),
+                        wallet.getBalance(),
+                        user.getCreatedAt(),
+                        user.getUpdatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(
+                ApiResponse.success("Users retrieved successfully", response)
+            );
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                ApiResponse.error(e.getMessage())
+            );
+        }
+    }
+
+    /**
+     * API 7: PUT /api/v1/users/{userId}/admin
+     * Update user admin fields (Admin endpoint)
+     */
+    @PutMapping("/{userId}/admin")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateUserAdminFields(
+            @PathVariable Long userId,
+            @RequestBody AdminUpdateRequest request) {
+
+        try {
+            User user = userService.updateUserAdminFields(
+                userId,
+                request.getUserRole() != null ? User.UserRole.valueOf(request.getUserRole()) : null,
+                request.getKycStatus() != null ? User.KycStatus.valueOf(request.getKycStatus()) : null,
+                request.getIsActive()
+            );
+
+            Wallet wallet = walletService.getWalletByUserId(user.getId());
+
+            UserProfileResponse response = new UserProfileResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getCnicNumber(),
+                user.getKycStatus().toString(),
+                user.getUserRole().toString(),
+                user.getIsActive(),
+                wallet.getWalletNumber(),
+                wallet.getBalance(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+            );
+
+            return ResponseEntity.ok(
+                ApiResponse.success("User updated successfully", response)
+            );
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                 ApiResponse.error(e.getMessage())
@@ -206,14 +312,27 @@ public class UserController {
 }
 
 /**
- * Additional DTO for update profile
+ * Additional DTOs
  */
 class UpdateProfileRequest {
     private String fullName;
     private String phoneNumber;
-    
+
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+}
+
+class AdminUpdateRequest {
+    private String kycStatus;
+    private String userRole;
+    private Boolean isActive;
+
+    public String getKycStatus() { return kycStatus; }
+    public void setKycStatus(String kycStatus) { this.kycStatus = kycStatus; }
+    public String getUserRole() { return userRole; }
+    public void setUserRole(String userRole) { this.userRole = userRole; }
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 }

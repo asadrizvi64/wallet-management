@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -116,12 +117,35 @@ public class UserService {
     public User verifyKyc(Long userId, boolean approved) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
-        
+
         user.setKycStatus(approved ? User.KycStatus.VERIFIED : User.KycStatus.REJECTED);
-        
+
         return userRepository.save(user);
     }
-    
+
+    /**
+     * API 6: Get all users (Admin function)
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * API 7: Update user admin fields (Admin function)
+     */
+    @Transactional
+    public User updateUserAdminFields(Long userId, User.UserRole userRole,
+                                      User.KycStatus kycStatus, Boolean isActive) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (userRole != null) user.setUserRole(userRole);
+        if (kycStatus != null) user.setKycStatus(kycStatus);
+        if (isActive != null) user.setIsActive(isActive);
+
+        return userRepository.save(user);
+    }
+
     /**
      * Helper: Create wallet for new user
      */

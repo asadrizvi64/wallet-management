@@ -25,7 +25,11 @@ import {
   Phone,
   Badge,
   CreditCard,
-  ArrowBack
+  ArrowBack,
+  CalendarToday,
+  AdminPanelSettings,
+  CheckCircle,
+  Cancel as CancelIcon
 } from '@mui/icons-material';
 import axios from 'axios';
 
@@ -143,6 +147,16 @@ const EditProfile = () => {
       default:
         return 'warning';
     }
+  };
+
+  const getRoleColor = (role) => {
+    return role === 'ADMIN' ? 'secondary' : 'primary';
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
   if (loading) {
@@ -272,6 +286,19 @@ const EditProfile = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
+              label="Username"
+              value={user.username || 'N/A'}
+              disabled
+              InputProps={{
+                readOnly: true,
+                startAdornment: <Person sx={{ mr: 1, color: 'action.active' }} />
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
               label="CNIC Number"
               value={user.cnicNumber || 'Not provided'}
               disabled
@@ -282,7 +309,7 @@ const EditProfile = () => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="body1" sx={{ mr: 2 }}>
                 KYC Status:
@@ -293,6 +320,69 @@ const EditProfile = () => {
                 size="small"
               />
             </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body1" sx={{ mr: 2 }}>
+                User Role:
+              </Typography>
+              <Chip
+                label={user.userRole || 'USER'}
+                color={getRoleColor(user.userRole)}
+                size="small"
+                icon={user.userRole === 'ADMIN' ? <AdminPanelSettings /> : <Person />}
+              />
+            </Box>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body1" sx={{ mr: 2 }}>
+                Account Status:
+              </Typography>
+              {user.isActive ? (
+                <Chip
+                  label="Active"
+                  color="success"
+                  size="small"
+                  icon={<CheckCircle />}
+                />
+              ) : (
+                <Chip
+                  label="Inactive"
+                  color="error"
+                  size="small"
+                  icon={<CancelIcon />}
+                />
+              )}
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Account Created"
+              value={formatDate(user.createdAt)}
+              disabled
+              InputProps={{
+                readOnly: true,
+                startAdornment: <CalendarToday sx={{ mr: 1, color: 'action.active' }} />
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Last Updated"
+              value={formatDate(user.updatedAt)}
+              disabled
+              InputProps={{
+                readOnly: true,
+                startAdornment: <CalendarToday sx={{ mr: 1, color: 'action.active' }} />
+              }}
+            />
           </Grid>
 
           {/* Wallet Information */}
