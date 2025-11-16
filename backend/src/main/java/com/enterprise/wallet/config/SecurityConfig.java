@@ -42,20 +42,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(customUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder);
         return authProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(authenticationProvider());
+    public AuthenticationManager authenticationManager(DaoAuthenticationProvider authenticationProvider) {
+        return new ProviderManager(authenticationProvider);
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authenticationProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPERUSER")
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
