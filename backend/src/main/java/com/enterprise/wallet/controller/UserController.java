@@ -91,6 +91,8 @@ public class UserController {
             @Valid @RequestBody LoginRequest request) {
 
         try {
+            System.out.println("DEBUG: Login attempt for email: " + request.getEmail());
+
             // Authenticate user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -99,6 +101,7 @@ public class UserController {
                     )
             );
 
+            System.out.println("DEBUG: Authentication successful for: " + request.getEmail());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // Generate JWT token
@@ -123,6 +126,10 @@ public class UserController {
             );
 
         } catch (Exception e) {
+            System.err.println("DEBUG: Login failed for " + request.getEmail());
+            System.err.println("DEBUG: Exception type: " + e.getClass().getName());
+            System.err.println("DEBUG: Exception message: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(
                     ApiResponse.error("Invalid email or password")
             );
