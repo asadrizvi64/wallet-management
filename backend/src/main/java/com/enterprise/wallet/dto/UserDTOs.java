@@ -29,6 +29,19 @@ public class UserDTOs {
         @Email(message = "Email should be valid")
         private String email;
 
+        // Custom setters to trim whitespace
+        public void setEmail(String email) {
+            this.email = email != null ? email.trim() : null;
+        }
+
+        public void setUsername(String username) {
+            this.username = username != null ? username.trim() : null;
+        }
+
+        public void setPassword(String password) {
+            this.password = password != null ? password.trim() : null;
+        }
+
         public String getEmail() {
             return email != null && !email.isBlank() ? email : username;
         }
@@ -56,6 +69,31 @@ public class UserDTOs {
         private String phoneNumber;
 
         private String cnicNumber;
+
+        // Custom setters to trim whitespace
+        public void setUsername(String username) {
+            this.username = username != null ? username.trim() : null;
+        }
+
+        public void setEmail(String email) {
+            this.email = email != null ? email.trim() : null;
+        }
+
+        public void setPassword(String password) {
+            this.password = password != null ? password.trim() : null;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName != null ? fullName.trim() : null;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber != null ? phoneNumber.trim() : null;
+        }
+
+        public void setCnicNumber(String cnicNumber) {
+            this.cnicNumber = cnicNumber != null ? cnicNumber.trim() : null;
+        }
     }
 
     @Data
