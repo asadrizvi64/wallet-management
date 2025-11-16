@@ -25,8 +25,8 @@ public class UserDTOs {
         @NotBlank(message = "Password is required")
         private String password;
 
-        // Email is the primary login field (optional - can use username instead)
-        @Email(message = "Email should be valid")
+        // Email is the primary login field (can also accept username)
+        // No @Email validation here since this field accepts both email and username
         private String email;
 
         public String getEmail() {
