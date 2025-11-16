@@ -2,6 +2,7 @@ package com.enterprise.wallet.controller;
 
 import com.enterprise.wallet.dto.AdminDTOs.*;
 import com.enterprise.wallet.dto.OtherDTOs.*;
+import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.entity.*;
 import com.enterprise.wallet.service.*;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +78,7 @@ public class AdminController {
 
             BigDecimal totalFees = allTransactions.stream()
                     .filter(t -> t.getTransactionStatus() == Transaction.TransactionStatus.COMPLETED)
-                    .map(t -> t.getFee() != null ? t.getFee() : BigDecimal.ZERO)
+                    .map(t -> t.getTransactionFee() != null ? t.getTransactionFee() : BigDecimal.ZERO)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             stats.setTotalRevenue(totalFees);
 
@@ -203,7 +204,7 @@ public class AdminController {
                             tx.getRecipientWallet() != null ? tx.getRecipientWallet().getWalletNumber() : null,
                             tx.getRecipientWallet() != null ? tx.getRecipientWallet().getUser().getFullName() : null,
                             tx.getAmount(),
-                            tx.getFee(),
+                            tx.getTransactionFee(),
                             tx.getCurrency(),
                             tx.getTransactionType().toString(),
                             tx.getTransactionStatus().toString(),
@@ -235,10 +236,12 @@ public class AdminController {
             @RequestBody RefundRequest request) {
 
         try {
-            Transaction refundedTx = transactionService.refundTransaction(
+            RefundTransactionRequest refundRequest = new RefundTransactionRequest(
                     transactionRef,
                     request.getReason()
             );
+
+            TransactionResponse refundedTx = transactionService.refundTransaction(refundRequest);
 
             return ResponseEntity.ok(
                     ApiResponse.success("Transaction refunded successfully",
