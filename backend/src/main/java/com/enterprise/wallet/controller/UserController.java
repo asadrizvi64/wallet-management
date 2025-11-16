@@ -5,6 +5,7 @@ import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.entity.User;
 import com.enterprise.wallet.entity.Wallet;
 import com.enterprise.wallet.security.JwtTokenProvider;
+import com.enterprise.wallet.security.UserPrincipal;
 import com.enterprise.wallet.service.UserService;
 import com.enterprise.wallet.service.WalletService;
 import jakarta.validation.Valid;
@@ -103,8 +104,9 @@ public class UserController {
             // Generate JWT token
             String token = tokenProvider.generateToken(authentication);
 
-            // Get user details
-            User user = userService.getUserByEmail(request.getEmail());
+            // Get user details from authenticated principal
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            User user = userService.getUserById(userPrincipal.getId());
             Wallet wallet = walletService.getWalletByUserId(user.getId());
 
             LoginResponse response = new LoginResponse(
