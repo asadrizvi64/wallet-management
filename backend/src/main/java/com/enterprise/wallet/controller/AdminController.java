@@ -1,6 +1,7 @@
 package com.enterprise.wallet.controller;
 
 import com.enterprise.wallet.dto.AdminDTOs.*;
+import com.enterprise.wallet.dto.AdminDTOs.UpdateWalletStatusRequest;
 import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.entity.*;
@@ -148,7 +149,7 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<ApiResponse<String>> updateWalletStatus(
             @PathVariable Long walletId,
-            @RequestBody AdminDTOs.UpdateWalletStatusRequest request) {
+            @RequestBody UpdateWalletStatusRequest request) {
 
         try {
             Wallet.WalletStatus status = Wallet.WalletStatus.valueOf(request.getStatus());
