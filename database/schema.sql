@@ -12,8 +12,9 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20),
+    cnic_number VARCHAR(20),
     kyc_status ENUM('PENDING', 'VERIFIED', 'REJECTED') DEFAULT 'PENDING',
-    user_role ENUM('USER', 'ADMIN') DEFAULT 'USER',
+    user_role ENUM('USER', 'ADMIN', 'SUPERUSER') DEFAULT 'USER',
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -144,10 +145,10 @@ CREATE TABLE payment_links (
 -- Insert Sample Data
 
 -- Sample Users (password for all users is: password123)
-INSERT INTO users (username, email, password, full_name, phone_number, kyc_status, user_role) VALUES
-('asad_khan', 'asad@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Asad Khan', '+92-300-1234567', 'VERIFIED', 'SUPERUSER'),
-('ali_ahmed', 'ali@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Ali Ahmed', '+92-301-2345678', 'VERIFIED', 'USER'),
-('sara_malik', 'sara@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Sara Malik', '+92-302-3456789', 'PENDING', 'USER');
+INSERT INTO users (username, email, password, full_name, phone_number, cnic_number, kyc_status, user_role) VALUES
+('asad_khan', 'asad@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Asad Khan', '+92-300-1234567', '12345-6789012-1', 'VERIFIED', 'SUPERUSER'),
+('ali_ahmed', 'ali@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Ali Ahmed', '+92-301-2345678', '12345-6789012-2', 'VERIFIED', 'USER'),
+('sara_malik', 'sara@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Sara Malik', '+92-302-3456789', '12345-6789012-3', 'PENDING', 'USER');
 
 -- Sample Wallets (password for all users is: password123)
 INSERT INTO wallets (user_id, wallet_number, balance, wallet_status, wallet_type) VALUES
