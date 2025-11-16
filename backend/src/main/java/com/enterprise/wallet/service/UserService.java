@@ -54,7 +54,9 @@ public class UserService {
         user.setUserRole(User.UserRole.USER);
         user.setIsActive(true);
 
+        System.out.println("DEBUG: Saving user with email: '" + email + "', username: '" + username + "'");
         User savedUser = userRepository.save(user);
+        System.out.println("DEBUG: User saved with ID: " + savedUser.getId() + ", email: '" + savedUser.getEmail() + "', username: '" + savedUser.getUsername() + "'");
 
         // Auto-create wallet for user
         createWalletForUser(savedUser);
