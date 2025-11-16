@@ -15,6 +15,8 @@ public class FlywayConfig {
     @Bean
     public FlywayMigrationStrategy flywayMigrationStrategy() {
         return flyway -> {
+            // Clean database first (drops all objects)
+            flyway.clean();
             // Repair checksums before migration
             flyway.repair();
             // Then run migrations
