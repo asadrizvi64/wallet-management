@@ -6,6 +6,7 @@ import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.entity.*;
 import com.enterprise.wallet.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -149,7 +150,7 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<ApiResponse<String>> updateWalletStatus(
             @PathVariable Long walletId,
-            @RequestBody UpdateWalletStatusRequest request) {
+            @Valid @RequestBody AdminDTOs.UpdateWalletStatusRequest request) {
 
         try {
             Wallet.WalletStatus status = Wallet.WalletStatus.valueOf(request.getStatus());
@@ -234,7 +235,7 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<ApiResponse<String>> refundTransaction(
             @PathVariable String transactionRef,
-            @RequestBody RefundRequest request) {
+            @Valid @RequestBody RefundRequest request) {
 
         try {
             RefundTransactionRequest refundRequest = new RefundTransactionRequest(

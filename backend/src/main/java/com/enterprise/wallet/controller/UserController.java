@@ -7,6 +7,7 @@ import com.enterprise.wallet.entity.Wallet;
 import com.enterprise.wallet.security.JwtTokenProvider;
 import com.enterprise.wallet.service.UserService;
 import com.enterprise.wallet.service.WalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +40,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserProfileResponse>> registerUser(
-            @RequestBody RegisterRequest request) {
+            @Valid @RequestBody RegisterRequest request) {
         
         try {
             User user = userService.registerUser(
@@ -86,7 +87,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginUser(
-            @RequestBody LoginRequest request) {
+            @Valid @RequestBody LoginRequest request) {
 
         try {
             // Authenticate user
@@ -133,7 +134,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(
             @PathVariable Long userId,
-            @RequestBody UpdateProfileRequest request) {
+            @Valid @RequestBody UpdateProfileRequest request) {
         
         try {
             User user = userService.updateUserProfile(
@@ -285,7 +286,7 @@ public class UserController {
     @PutMapping("/{userId}/admin")
     public ResponseEntity<ApiResponse<UserProfileResponse>> updateUserAdminFields(
             @PathVariable Long userId,
-            @RequestBody AdminUpdateRequest request) {
+            @Valid @RequestBody AdminUpdateRequest request) {
 
         try {
             User user = userService.updateUserAdminFields(
