@@ -1,7 +1,6 @@
 package com.enterprise.wallet.controller;
 
 import com.enterprise.wallet.dto.AdminDTOs.*;
-import com.enterprise.wallet.dto.AdminDTOs.UpdateWalletStatusRequest;
 import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.dto.TransactionDTOs.*;
 import com.enterprise.wallet.entity.*;
