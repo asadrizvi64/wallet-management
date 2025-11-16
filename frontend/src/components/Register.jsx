@@ -4,9 +4,9 @@ import {
   Container, Paper, TextField, Button, Typography, Box, Alert, Link
 } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import axios from 'axios';
+import axios from '../axiosConfig';
 
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = '';
 
 function Register({ onRegister }) {
   const navigate = useNavigate();
