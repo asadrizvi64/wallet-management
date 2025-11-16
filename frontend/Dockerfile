@@ -1,31 +1,31 @@
-# Multi-stage build for Spring Boot application
-FROM maven:3.9-eclipse-temurin-17 AS build
+# Multi-stage build for React frontend
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
-COPY backend/pom.xml .
-RUN mvn dependency:go-offline
+# Copy package files
+COPY package*.json ./
 
-# Copy source code and build
-COPY backend/src ./src
-RUN mvn clean package -DskipTests
+# Install dependencies
+RUN npm ci
 
-# Runtime stage
-FROM eclipse-temurin:17-jre-alpine
+# Copy source code
+COPY . .
 
-WORKDIR /app
+# Build the app
+RUN npm run build
 
-# Copy JAR from build stage
-COPY --from=build /app/target/*.jar app.jar
+# Production stage with nginx
+FROM nginx:alpine
 
-# Expose port
-EXPOSE 8080
+# Copy built assets from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Environment variables
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/wallet_db
-ENV SPRING_DATASOURCE_USERNAME=root
-ENV SPRING_DATASOURCE_PASSWORD=root
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Run application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
