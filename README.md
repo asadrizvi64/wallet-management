@@ -8,17 +8,21 @@ This is a complete, production-ready Wallet Management System built as an Enterp
 
 ### ✨ Key Features
 
-- **21+ API Endpoints** for complete wallet management
-- **User Authentication** with JWT (simplified for demo)
+- **29+ API Endpoints** for complete wallet management
+- **Role-Based Access Control** (USER, ADMIN, SUPERUSER)
+- **Admin Dashboard** with comprehensive system statistics
+- **User Authentication** with JWT and BCrypt password encryption
 - **Multiple Wallet Types** (Personal, Business, Savings)
 - **Transaction Management** (Add Money, Withdraw, Transfer, Payment)
 - **Payment Links** for collecting payments
 - **Transaction Limits** with daily/monthly controls
 - **Real-time Notifications**
 - **Analytics & Reports**
+- **SUPERUSER Operations** (Refunds, User/Wallet Management)
 - **RESTful API** with Swagger documentation
 - **React Dashboard** for user interaction
 - **MySQL Database** with comprehensive schema
+- **Auto-initialization** with demo accounts
 
 ---
 
@@ -144,8 +148,20 @@ npm start
 ### Authentication APIs
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | User login |
+| POST | `/api/v1/users/register` | Register new user |
+| POST | `/api/v1/users/login` | User login |
+
+### Admin Dashboard APIs (ADMIN & SUPERUSER Roles)
+| Method | Endpoint | Description | Access Level |
+|--------|----------|-------------|--------------|
+| GET | `/api/v1/admin/dashboard` | Get comprehensive dashboard statistics | ADMIN, SUPERUSER |
+| GET | `/api/v1/admin/wallets` | Get all wallets in system | ADMIN, SUPERUSER |
+| PUT | `/api/v1/admin/wallets/{walletId}` | Update wallet status (Active/Frozen/Blocked) | SUPERUSER only |
+| GET | `/api/v1/admin/transactions` | Get all transactions with filters | ADMIN, SUPERUSER |
+| POST | `/api/v1/admin/transactions/{transactionRef}/refund` | Refund a transaction | SUPERUSER only |
+| GET | `/api/v1/admin/payment-methods` | Get all payment methods | ADMIN, SUPERUSER |
+| DELETE | `/api/v1/admin/payment-methods/{paymentMethodId}` | Delete payment method | SUPERUSER only |
+| DELETE | `/api/v1/admin/users/{userId}` | Delete user and all data | SUPERUSER only |
 
 ### Wallet Management APIs
 | Method | Endpoint | Description |
@@ -225,40 +241,84 @@ npm start
 
 **Scenario 1: User Registration & Wallet Creation**
 ```
-1. POST /api/auth/register
-2. POST /api/wallets/create?userId=1
-3. GET /api/wallets/user/1
+1. POST /api/v1/users/register
+2. POST /api/v1/users/login
+3. View auto-created wallet in response
 ```
 
 **Scenario 2: Complete Transaction Flow**
 ```
-1. POST /api/transactions/add-money (Add PKR 10,000)
-2. GET /api/wallets/1/balance (Verify balance)
-3. POST /api/transactions/transfer (Transfer PKR 2,000)
-4. GET /api/transactions/wallet/1/history (Check history)
+1. POST /api/v1/transactions/add-money (Add PKR 10,000)
+2. GET /api/v1/wallets/{walletId}/balance (Verify balance)
+3. POST /api/v1/transactions/transfer (Transfer PKR 2,000)
+4. GET /api/v1/transactions/wallet/{walletId}/history (Check history)
 ```
 
-**Scenario 3: Payment Link Generation**
+**Scenario 3: Admin Dashboard Access**
+```
+1. POST /api/v1/users/login (Use superadmin credentials)
+2. GET /api/v1/admin/dashboard (View system statistics)
+3. GET /api/v1/admin/wallets (View all wallets)
+4. GET /api/v1/admin/transactions?status=COMPLETED (Filter transactions)
+```
+
+**Scenario 4: SUPERUSER Operations**
+```
+1. Login as superadmin
+2. PUT /api/v1/admin/wallets/{walletId} (Change wallet status to FROZEN)
+3. POST /api/v1/admin/transactions/{transactionRef}/refund (Refund a transaction)
+4. DELETE /api/v1/admin/payment-methods/{paymentMethodId} (Delete payment method)
+```
+
+**Scenario 5: Payment Link Generation**
 ```
 1. POST /api/payment-links/generate
 2. POST /api/payment-links/verify
-3. GET /api/transactions/wallet/1/history
+3. GET /api/v1/transactions/wallet/{walletId}/history
 ```
 
 ---
 
 ## 💻 Frontend Usage
 
-### Login Credentials (Default Users)
+### Login Credentials (Demo Accounts)
 
-After running schema.sql, use these credentials:
+The system automatically creates demo accounts on first startup:
 
+**SUPERADMIN Account (Full Access):**
+```
+Username: superadmin
+Email: superadmin@wallet.com
+Password: SuperAdmin@123
+Role: SUPERUSER
+Privileges: All admin operations + critical actions (delete users, refund transactions, update wallet status)
+```
+
+**ADMIN Account (View & Monitor):**
+```
+Username: admin
+Email: admin@wallet.com
+Password: Admin@123
+Role: ADMIN
+Privileges: View dashboard, monitor transactions, view users and wallets
+```
+
+**DEMO USER Account (Regular User):**
+```
+Username: demouser
+Email: demo@wallet.com
+Password: Demo@123
+Role: USER
+Privileges: Standard wallet operations
+```
+
+**Legacy Test Accounts (if using schema.sql):**
 ```
 Username: asad_khan
 Password: password123
 Email: asad@example.com
 
-Username: ali_ahmed  
+Username: ali_ahmed
 Password: password123
 Email: ali@example.com
 ```
@@ -283,13 +343,127 @@ Email: ali@example.com
 
 ---
 
+## 👥 User Roles & Permissions
+
+The system supports three user roles with different privilege levels:
+
+### 1. USER (Regular User)
+**Description**: Standard user account with personal wallet management capabilities
+**Access**:
+- Create and manage personal wallets
+- Perform transactions (add money, withdraw, transfer, payments)
+- View transaction history
+- Generate and use payment links
+- Manage payment methods
+- View notifications
+
+### 2. ADMIN (Administrator)
+**Description**: Administrative account for monitoring and oversight
+**Access**:
+- All USER privileges
+- View dashboard statistics
+- Monitor all wallets in the system
+- View all transactions with filters
+- View all payment methods
+- Access system-wide analytics
+
+**Restrictions**: Cannot perform critical operations like:
+- Updating wallet status
+- Refunding transactions
+- Deleting users or payment methods
+
+### 3. SUPERUSER (Super Administrator)
+**Description**: Highest privilege level with full system control
+**Access**:
+- All ADMIN privileges
+- Update wallet status (freeze/block wallets)
+- Refund transactions
+- Delete users and all associated data
+- Delete payment methods
+- All critical system operations
+
+**Use Case**: System maintenance, fraud prevention, compliance, and critical interventions
+
+### Role-Based Access Control (RBAC)
+
+The system uses Spring Security's `@PreAuthorize` annotation for endpoint protection:
+
+```java
+// Accessible by both ADMIN and SUPERUSER
+@PreAuthorize("hasAnyRole('ADMIN', 'SUPERUSER')")
+
+// Accessible only by SUPERUSER
+@PreAuthorize("hasRole('SUPERUSER')")
+```
+
+## 🎛️ Admin Dashboard Features
+
+### Dashboard Statistics
+The admin dashboard (`GET /api/v1/admin/dashboard`) provides comprehensive metrics:
+
+**User Statistics:**
+- Total registered users
+- Active users count
+- Pending KYC verifications
+- Verified KYC count
+
+**Wallet Statistics:**
+- Total wallets in system
+- Active wallets count
+- Total balance across all wallets
+- Wallet distribution by type
+
+**Transaction Statistics:**
+- Total transactions processed
+- Completed transactions
+- Pending transactions
+- Failed transactions
+- Total transaction volume
+- Total revenue from fees
+
+**Recent Activity:**
+- Latest user registrations
+- Recent transactions
+
+### Admin Operations
+
+**1. Wallet Management**
+- View all wallets with user details
+- Filter by status, type, or user
+- Update wallet status (SUPERUSER only)
+  - ACTIVE: Normal operations
+  - INACTIVE: Temporarily disabled
+  - FROZEN: Emergency freeze
+  - BLOCKED: Permanently blocked
+
+**2. Transaction Monitoring**
+- View all transactions across the platform
+- Filter by status (PENDING, COMPLETED, FAILED)
+- Filter by type (TOP_UP, WITHDRAWAL, TRANSFER, PAYMENT, REFUND)
+- Refund transactions (SUPERUSER only)
+- Track transaction volume and fees
+
+**3. User Management**
+- View all registered users
+- Monitor KYC status
+- Delete users and associated data (SUPERUSER only)
+- View user wallet associations
+
+**4. Payment Method Oversight**
+- View all payment methods in system
+- Monitor payment method status
+- Delete payment methods (SUPERUSER only)
+
 ## 🔒 Security Features
 
-- Password encryption using BCrypt
-- Input validation on all endpoints
-- Transaction limits enforcement
-- Wallet status controls (Active/Frozen/Blocked)
-- Comprehensive error handling
+- **JWT Authentication** with role-based access control
+- **Password Encryption** using BCrypt
+- **Input Validation** on all endpoints
+- **Transaction Limits** enforcement
+- **Wallet Status Controls** (Active/Frozen/Blocked)
+- **Role-Based Authorization** (USER, ADMIN, SUPERUSER)
+- **Comprehensive Error Handling**
+- **CORS Configuration** for frontend integration
 
 ---
 
@@ -392,33 +566,81 @@ Email: ali@example.com
 **Module**: Wallet Management System  
 **Implementation**: Complete end-to-end system
 
-### System Functions (21 Functions Implemented)
+### System Functions (29+ Functions Implemented)
 
-1. Create Wallet
-2. Get Wallet Details
-3. Get Wallet Balance
-4. Update Wallet Status
-5. Get Wallet History
-6. Add Money
-7. Withdraw Money
-8. Transfer Money
-9. Get Transaction Details
-10. Get Transaction History
-11. Cancel Transaction
-12. Refund Transaction
-13. Process Payment
-14. Generate Payment Link
-15. Verify Payment
-16. Get Payment Gateway Status
-17. Generate Wallet Statement
-18. Get Spending Analytics
-19. Export Transactions
-20. Set Transaction Limit
-21. Get Wallet Notifications
+**User Management:**
+1. User Registration
+2. User Login/Authentication
+3. Update User Profile
+4. Get User Details
+5. KYC Verification
+
+**Wallet Operations:**
+6. Create Wallet (Auto-created on registration)
+7. Get Wallet Details
+8. Get Wallet Balance
+9. Get User Wallets
+10. Get Wallet History
+
+**Transaction Operations:**
+11. Add Money
+12. Withdraw Money
+13. Transfer Money
+14. Process Payment
+15. Get Transaction Details
+16. Get Transaction History
+17. Cancel Transaction
+18. Refund Transaction
+
+**Payment Features:**
+19. Generate Payment Link
+20. Verify Payment
+21. Get Payment Gateway Status
+22. Manage Payment Methods
+
+**Analytics & Reports:**
+23. Generate Wallet Statement
+24. Get Spending Analytics
+25. Export Transactions
+
+**Admin Dashboard (ADMIN & SUPERUSER):**
+26. Get Dashboard Statistics
+27. View All Wallets
+28. View All Transactions (with filters)
+29. View All Payment Methods
+
+**SUPERUSER Operations:**
+30. Update Wallet Status (Freeze/Block wallets)
+31. Refund Transactions
+32. Delete Users and Associated Data
+33. Delete Payment Methods
 
 ---
 
 ## 🔄 Recent Updates (November 2024)
+
+### ✅ NEW: Admin Dashboard & Role-Based Access Control
+
+**Admin/Superuser functionality is now fully implemented!**
+
+**What's New:**
+- ✅ **Three-Tier Role System**: USER, ADMIN, and SUPERUSER roles
+- ✅ **Admin Dashboard API**: Comprehensive statistics and monitoring
+- ✅ **SUPERUSER Operations**: Wallet management, refunds, user deletion
+- ✅ **Demo Accounts**: Auto-created on first startup
+  - `superadmin` / `SuperAdmin@123` (SUPERUSER role)
+  - `admin` / `Admin@123` (ADMIN role)
+  - `demouser` / `Demo@123` (USER role)
+- ✅ **DataInitializer**: Automatic demo account creation
+- ✅ **Updated Documentation**: Complete role and permission details
+
+**Admin Dashboard Capabilities:**
+- Monitor all users, wallets, and transactions
+- View system-wide statistics
+- Filter transactions by status and type
+- SUPERUSER: Freeze/block wallets, process refunds, delete users
+
+See the **User Roles & Permissions** and **Admin Dashboard Features** sections for complete details.
 
 ### ⚠️ IMPORTANT: Frontend Migration to Vite
 

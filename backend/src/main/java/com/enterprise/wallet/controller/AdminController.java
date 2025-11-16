@@ -148,7 +148,7 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<ApiResponse<String>> updateWalletStatus(
             @PathVariable Long walletId,
-            @RequestBody UpdateWalletStatusRequest request) {
+            @RequestBody AdminDTOs.UpdateWalletStatusRequest request) {
 
         try {
             Wallet.WalletStatus status = Wallet.WalletStatus.valueOf(request.getStatus());
