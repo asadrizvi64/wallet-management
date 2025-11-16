@@ -8,10 +8,10 @@ import {
 import {
   AccountBalanceWallet, Send, Logout, Add, Remove, Person, AdminPanelSettings
 } from '@mui/icons-material';
-import axios from 'axios';
+import axios from '../axiosConfig';
 import TransactionDetailModal from './TransactionDetailModal';
 
-const API_BASE_URL = '/api/v1';
+const API_BASE_URL = '';
 
 function Dashboard({ user, onLogout }) {
   const navigate = useNavigate();

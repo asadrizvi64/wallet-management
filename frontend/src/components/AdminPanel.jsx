@@ -47,7 +47,7 @@ import {
   CheckCircle,
   Cancel as CancelIcon
 } from '@mui/icons-material';
-import axios from 'axios';
+import axios from '../axiosConfig';
 
 const AdminPanel = () => {
   const navigate = useNavigate();

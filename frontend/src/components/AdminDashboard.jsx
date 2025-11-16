@@ -44,7 +44,7 @@ import {
   Refresh,
   Payment
 } from '@mui/icons-material';
-import axios from 'axios';
+import axios from '../axiosConfig';
 
 function AdminDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
