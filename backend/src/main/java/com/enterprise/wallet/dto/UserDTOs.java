@@ -25,13 +25,12 @@ public class UserDTOs {
         @NotBlank(message = "Password is required")
         private String password;
 
-        // Email is the primary login field
-        @NotBlank(message = "Email is required")
+        // Email is the primary login field (optional - can use username instead)
         @Email(message = "Email should be valid")
         private String email;
 
         public String getEmail() {
-            return email != null ? email : username;
+            return email != null && !email.isBlank() ? email : username;
         }
     }
 
