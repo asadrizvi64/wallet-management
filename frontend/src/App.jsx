@@ -6,6 +6,7 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import EditProfile from './components/EditProfile';
 import AdminPanel from './components/AdminPanel';
+import AdminDashboard from './components/AdminDashboard';
 import './App.css';
 
 const theme = createTheme({
@@ -28,11 +29,24 @@ function App() {
   const handleLogin = (userData) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    if (userData.token) {
+      localStorage.setItem('token', userData.token);
+    }
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  };
+
+  // Check if user has admin or superuser role
+  const isAdmin = () => {
+    return user && (user.userRole === 'ADMIN' || user.userRole === 'SUPERUSER');
+  };
+
+  const isSuperuser = () => {
+    return user && user.userRole === 'SUPERUSER';
   };
 
   // Check if user is already logged in
@@ -76,7 +90,13 @@ function App() {
             <Route
               path="/admin"
               element={
-                user ? <AdminPanel /> : <Navigate to="/login" />
+                user ? (isAdmin() ? <AdminPanel /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                user ? (isSuperuser() ? <AdminDashboard /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
               }
             />
             <Route path="/" element={<Navigate to="/login" />} />

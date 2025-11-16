@@ -4,10 +4,15 @@ import com.enterprise.wallet.dto.UserDTOs.*;
 import com.enterprise.wallet.dto.OtherDTOs.*;
 import com.enterprise.wallet.entity.User;
 import com.enterprise.wallet.entity.Wallet;
+import com.enterprise.wallet.security.JwtTokenProvider;
 import com.enterprise.wallet.service.UserService;
 import com.enterprise.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +27,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
-    
+
     private final UserService userService;
     private final WalletService walletService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
     
     /**
      * API 1: POST /api/v1/users/register
@@ -80,34 +87,41 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginUser(
             @RequestBody LoginRequest request) {
-        
+
         try {
-            User user = userService.authenticateUser(
-                request.getEmail(),
-                request.getPassword()
+            // Authenticate user
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
             );
-            
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Generate JWT token
+            String token = tokenProvider.generateToken(authentication);
+
+            // Get user details
+            User user = userService.getUserByEmail(request.getEmail());
             Wallet wallet = walletService.getWalletByUserId(user.getId());
 
-            // In real app, generate JWT token here
-            String token = "TOKEN-" + System.currentTimeMillis();
-
             LoginResponse response = new LoginResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getFullName(),
-                user.getUserRole().toString(),
-                token,
-                wallet.getWalletNumber()
+                    user.getId(),
+                    user.getEmail(),
+                    user.getFullName(),
+                    user.getUserRole().toString(),
+                    token,
+                    wallet.getWalletNumber()
             );
 
             return ResponseEntity.ok(
-                ApiResponse.success("Login successful", response)
+                    ApiResponse.success("Login successful", response)
             );
-            
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                ApiResponse.error(e.getMessage())
+                    ApiResponse.error("Invalid email or password")
             );
         }
     }
