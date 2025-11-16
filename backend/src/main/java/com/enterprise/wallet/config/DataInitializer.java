@@ -82,6 +82,9 @@ public class DataInitializer {
         superAdmin.setIsActive(true);
 
         User savedUser = userRepository.save(superAdmin);
+        log.debug("SUPERADMIN saved with ID: {}, Email: {}, Active: {}",
+            savedUser.getId(), savedUser.getEmail(), savedUser.getIsActive());
+
         createWalletForUser(savedUser, new BigDecimal("100000")); // Initial balance for demo
 
         log.info("Created demo SUPERADMIN account");
@@ -100,6 +103,9 @@ public class DataInitializer {
         admin.setIsActive(true);
 
         User savedUser = userRepository.save(admin);
+        log.debug("ADMIN saved with ID: {}, Email: {}, Active: {}",
+            savedUser.getId(), savedUser.getEmail(), savedUser.getIsActive());
+
         createWalletForUser(savedUser, new BigDecimal("50000")); // Initial balance for demo
 
         log.info("Created demo ADMIN account");
@@ -118,6 +124,9 @@ public class DataInitializer {
         user.setIsActive(true);
 
         User savedUser = userRepository.save(user);
+        log.debug("USER saved with ID: {}, Email: {}, Active: {}",
+            savedUser.getId(), savedUser.getEmail(), savedUser.getIsActive());
+
         createWalletForUser(savedUser, new BigDecimal("10000")); // Initial balance for demo
 
         log.info("Created demo USER account");
