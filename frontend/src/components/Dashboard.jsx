@@ -216,9 +216,14 @@ function Dashboard({ user, onLogout }) {
           <Typography variant="body2" sx={{ mr: 2 }}>
             {user.fullName}
           </Typography>
-          {user.userRole === 'ADMIN' && (
+          {(user.userRole === 'ADMIN' || user.userRole === 'SUPERUSER') && (
             <Button color="inherit" onClick={() => navigate('/admin')} startIcon={<AdminPanelSettings />} sx={{ mr: 1 }}>
               Admin Panel
+            </Button>
+          )}
+          {user.userRole === 'SUPERUSER' && (
+            <Button color="inherit" onClick={() => navigate('/admin/dashboard')} startIcon={<AdminPanelSettings />} sx={{ mr: 1 }}>
+              Superuser Dashboard
             </Button>
           )}
           <Button color="inherit" onClick={() => navigate('/profile')} startIcon={<Person />} sx={{ mr: 1 }}>

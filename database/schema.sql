@@ -143,9 +143,9 @@ CREATE TABLE payment_links (
 
 -- Insert Sample Data
 
--- Sample Users
+-- Sample Users (password for all users is: password123)
 INSERT INTO users (username, email, password, full_name, phone_number, kyc_status, user_role) VALUES
-('asad_khan', 'asad@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Asad Khan', '+92-300-1234567', 'VERIFIED', 'ADMIN'),
+('asad_khan', 'asad@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Asad Khan', '+92-300-1234567', 'VERIFIED', 'SUPERUSER'),
 ('ali_ahmed', 'ali@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Ali Ahmed', '+92-301-2345678', 'VERIFIED', 'USER'),
 ('sara_malik', 'sara@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Sara Malik', '+92-302-3456789', 'PENDING', 'USER');
 

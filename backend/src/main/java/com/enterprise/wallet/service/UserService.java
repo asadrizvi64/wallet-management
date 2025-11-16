@@ -109,6 +109,14 @@ public class UserService {
         return userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    /**
+     * Get user by email
+     */
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    }
     
     /**
      * API 5: KYC verification (Admin function)
@@ -168,11 +176,23 @@ public class UserService {
         String prefix = "WLT";
         Random random = new Random();
         String number;
-        
+
         do {
             number = prefix + String.format("%010d", random.nextInt(1000000000));
         } while (walletRepository.existsByWalletNumber(number));
-        
+
         return number;
+    }
+
+    /**
+     * Admin: Delete user (SUPERUSER only)
+     */
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Delete user (cascade will handle wallets, payment methods, etc.)
+        userRepository.delete(user);
     }
 }

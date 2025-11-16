@@ -76,4 +76,20 @@ public class PaymentMethodService {
 
         log.info("Payment method deleted: {}", paymentMethodId);
     }
+
+    // Admin Methods
+    public List<PaymentMethod> getAllPaymentMethods() {
+        return paymentMethodRepository.findAll();
+    }
+
+    public void deletePaymentMethod(Long paymentMethodId) {
+        log.info("Admin deleting payment method ID: {}", paymentMethodId);
+
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(paymentMethodId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment method not found"));
+
+        paymentMethodRepository.delete(paymentMethod);
+
+        log.info("Payment method deleted by admin: {}", paymentMethodId);
+    }
 }

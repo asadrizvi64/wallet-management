@@ -168,4 +168,24 @@ public class WalletService {
         // Return the first wallet (primary wallet)
         return wallets.get(0);
     }
+
+    // Admin Methods
+    public List<Wallet> getAllWallets() {
+        return walletRepository.findAll();
+    }
+
+    public void updateWalletStatusById(Long walletId, Wallet.WalletStatus status) {
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+
+        Wallet.WalletStatus oldStatus = wallet.getWalletStatus();
+        wallet.setWalletStatus(status);
+        walletRepository.save(wallet);
+
+        // Notify user about status change
+        createNotification(wallet, "Wallet Status Changed",
+                "Your wallet status has been updated from " + oldStatus + " to " + status);
+
+        log.info("Wallet {} status updated to {}", walletId, status);
+    }
 }

@@ -435,4 +435,9 @@ public class TransactionService {
                 transaction.getCompletedAt()
         );
     }
+
+    // Admin Methods
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
 }
