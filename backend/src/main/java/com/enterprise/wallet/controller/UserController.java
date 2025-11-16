@@ -10,6 +10,7 @@ import com.enterprise.wallet.service.UserService;
 import com.enterprise.wallet.service.WalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -90,8 +92,11 @@ public class UserController {
     public ResponseEntity<ApiResponse<LoginResponse>> loginUser(
             @Valid @RequestBody LoginRequest request) {
 
+        log.debug("Login attempt for user: {}", request.getEmail());
+
         try {
             // Authenticate user
+            log.debug("Authenticating user with email/username: {}", request.getEmail());
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
@@ -99,6 +104,7 @@ public class UserController {
                     )
             );
 
+            log.debug("Authentication successful for user: {}", request.getEmail());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // Generate JWT token
@@ -108,6 +114,8 @@ public class UserController {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             User user = userService.getUserById(userPrincipal.getId());
             Wallet wallet = walletService.getWalletByUserId(user.getId());
+
+            log.info("User logged in successfully: {}", user.getEmail());
 
             LoginResponse response = new LoginResponse(
                     user.getId(),
@@ -123,6 +131,11 @@ public class UserController {
             );
 
         } catch (Exception e) {
+            log.error("Login failed for user: {}. Error: {}", request.getEmail(), e.getMessage());
+            log.debug("DEBUG: Login failed for {}", request.getEmail());
+            log.debug("DEBUG: Exception type: {}", e.getClass().getName());
+            log.debug("DEBUG: Exception message: {}", e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(
                     ApiResponse.error("Invalid email or password")
             );
